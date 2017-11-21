@@ -1,8 +1,8 @@
 #include <Arduino.h>
 #include <Adafruit_ILI9341.h>
 
-#include "Asteroid.h"
-#include "Spaceship.h"
+#include "asteroid.h"
+#include "spaceship.h"
 
 #define TFT_DC 9
 #define TFT_CS 10

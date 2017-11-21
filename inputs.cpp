@@ -1,4 +1,4 @@
-#include "Inputs.h"
+#include "inputs.h"
 
 int lastPress_joy = LOW;
 int lastPress_1 = LOW;

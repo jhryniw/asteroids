@@ -4,8 +4,8 @@
 #include <Arduino.h>
 #include <Adafruit_ILI9341.h>
 
-#include "Inputs.h"
-#include "Bullet.h"
+#include "inputs.h"
+#include "bullet.h"
 
 #define TFT_WIDTH 320
 #define TFT_HEIGHT 240
@@ -34,11 +34,11 @@ private:
 
 	Adafruit_ILI9341* tft_;
 
-	void draw_(uint16_t color);
-	void updateBullets_();
-	void updateAcceleration_();
-	void updateVelocity_();
-	void updateDisplacement_();
+	void draw(uint16_t color);
+	void updateBullets();
+	void updateAcceleration();
+	void updateVelocity();
+	void updateDisplacement();
 
 };
 

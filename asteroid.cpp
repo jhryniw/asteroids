@@ -1,4 +1,4 @@
-#include "Asteroid.h"
+#include "asteroid.h"
 
 void Asteroid::init(Adafruit_ILI9341* tft) {
 	tft_ = tft;
@@ -72,14 +72,14 @@ void Asteroid::initRand(Adafruit_ILI9341* tft) {
 	Serial.println(vy_);
 }
 
-void Asteroid::updateAcceleration_() {}
+void Asteroid::updateAcceleration() {}
 
-void Asteroid::updateVelocity_() {
+void Asteroid::updateVelocity() {
 	vx_ += ax_;
 	vy_ += ay_;
 }
 
-void Asteroid::updateDisplacement_() {
+void Asteroid::updateDisplacement() {
 	dx_ = constrain(dx_+vx_, LOOP_LEFT, LOOP_RIGHT);
 	dy_ = constrain(dy_+vy_, LOOP_UP, LOOP_DOWN);
 
@@ -98,13 +98,13 @@ void Asteroid::updateDisplacement_() {
 }
 
 void Asteroid::update() {
-	draw_(ILI9341_BLACK);
-	updateAcceleration_();
-	updateVelocity_();
-	updateDisplacement_();
-	draw_(ASTEROID_COLOR);
+	draw(ILI9341_BLACK);
+	updateAcceleration();
+	updateVelocity();
+	updateDisplacement();
+	draw(ASTEROID_COLOR);
 }
 
-void Asteroid::draw_(uint16_t color) {
+void Asteroid::draw(uint16_t color) {
 	tft_->drawCircle((uint16_t) dx_, (uint16_t) dy_, ASTEROID_RADIUS, color);
 }

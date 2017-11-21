@@ -1,4 +1,4 @@
-#include "Spaceship.h"
+#include "spaceship.h"
 
 void Spaceship::init(Adafruit_ILI9341* tft) {
 	tft_ = tft;
@@ -14,7 +14,7 @@ void Spaceship::init(Adafruit_ILI9341* tft) {
 	bullet_.init(tft_, dx_, dy_, sx_, sy_);
 }
 
-void Spaceship::updateAcceleration_() {
+void Spaceship::updateAcceleration() {
 	float sx = getJoystickHoriz();
 	float sy = getJoystickVert();
 
@@ -36,12 +36,12 @@ void Spaceship::updateAcceleration_() {
 	}
 }
 
-void Spaceship::updateVelocity_() {
+void Spaceship::updateVelocity() {
 	vx_ = constrain(vx_+ax_, -SPACESHIP_VEL_MAG_MAX, SPACESHIP_VEL_MAG_MAX);
 	vy_ = constrain(vy_+ay_, -SPACESHIP_VEL_MAG_MAX, SPACESHIP_VEL_MAG_MAX);
 }
 
-void Spaceship::updateDisplacement_() {
+void Spaceship::updateDisplacement() {
 	dx_ = constrain(dx_+vx_, 0, TFT_WIDTH);
 	dy_ = constrain(dy_+vy_, 0, TFT_HEIGHT);
 
@@ -56,22 +56,22 @@ void Spaceship::updateDisplacement_() {
 }
 
 void Spaceship::update() {
-	draw_(ILI9341_BLACK);
-	updateAcceleration_();
-	updateVelocity_();
-	updateDisplacement_();
-	updateBullets_();
-	draw_(SPACESHIP_COLOR);
+	draw(ILI9341_BLACK);
+	updateAcceleration();
+	updateVelocity();
+	updateDisplacement();
+	updateBullets();
+	draw(SPACESHIP_COLOR);
 }
 
-void Spaceship::draw_(uint16_t color) {
+void Spaceship::draw(uint16_t color) {
 	tft_->drawCircle((uint16_t) dx_, (uint16_t) dy_, SPACESHIP_RADIUS, color);
 	tft_->drawLine((uint16_t) dx_, (uint16_t) dy_,
 		(uint16_t) dx_+sx_*SPACESHIP_RADIUS,
 			(uint16_t) dy_+sy_*SPACESHIP_RADIUS, color);
 }
 
-void Spaceship::updateBullets_() {
+void Spaceship::updateBullets() {
 	if (getButtonPress(BUTTON_2, true)) {
 		bullet_.destroy();
 		bullet_.init(tft_, dx_, dy_, sx_, sy_);

@@ -42,10 +42,10 @@ private:
 
 	Adafruit_ILI9341* tft_;
 
-	void draw_(uint16_t color);
-	void updateAcceleration_();
-	void updateVelocity_();
-	void updateDisplacement_();
+	void draw(uint16_t color);
+	void updateAcceleration();
+	void updateVelocity();
+	void updateDisplacement();
 };
 
 #endif

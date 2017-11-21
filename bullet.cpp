@@ -1,4 +1,4 @@
-#include "Bullet.h"
+#include "bullet.h"
 
 Bullet::~Bullet() {
 	tft_->drawPixel((uint16_t) dx_, (uint16_t) dy_, ILI9341_BLACK);
@@ -30,30 +30,30 @@ void Bullet::init(Adafruit_ILI9341* tft, float dx, float dy,
 }
 
 void Bullet::destroy() {
-	draw_(ILI9341_BLACK);
+	draw(ILI9341_BLACK);
 }
 
-void Bullet::updateAcceleration_() {}
+void Bullet::updateAcceleration() {}
 
-void Bullet::updateVelocity_(){
+void Bullet::updateVelocity(){
 	vx_ += ax_;
 	vy_ += ay_;
 }
 
-void Bullet::updateDisplacement_() {
+void Bullet::updateDisplacement() {
 	dx_ += vx_;
 	dy_ += vy_;
 }
 
 void Bullet::update() {
-	draw_(ILI9341_BLACK);
+	draw(ILI9341_BLACK);
 	dx_ += vx_;
 	dy_ += vy_;
 	vx_ += ax_;
 	vy_ += ay_;
-	draw_(BULLET_COLOR);
+	draw(BULLET_COLOR);
 }
 
-void Bullet::draw_(uint16_t color) {
+void Bullet::draw(uint16_t color) {
 	tft_->drawPixel((uint16_t) dx_, (uint16_t) dy_, color);
 }
