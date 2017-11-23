@@ -131,7 +131,7 @@ void Asteroid::draw(uint16_t color) {
 bool Asteroid::rayTraceEdge(edge e, int bx, int by) {
 	// Based on https://rosettacode.org/wiki/Ray-casting_algorithm
 	int max_x = max(e.p1.px, e.p2.px)+dx_;
-	int min_x = min(e.p1.px, e.p2.px);
+	int min_x = min(e.p1.px, e.p2.px)+dx_;
 	int max_y = max(e.p1.py, e.p2.py)+dy_;
 	int min_y = min(e.p1.py, e.p2.py)+dy_;
 
