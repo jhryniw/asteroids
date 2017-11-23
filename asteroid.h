@@ -3,9 +3,7 @@
 
 #include <Arduino.h>
 #include <Adafruit_ILI9341.h>
-
-#define TFT_WIDTH 320
-#define TFT_HEIGHT 240
+#include "common.h"
 
 #define ASTEROID_RADIUS 5
 #define ASTEROID_COLOR ILI9341_WHITE

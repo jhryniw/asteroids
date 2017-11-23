@@ -1,7 +1,7 @@
 #include "bullet.h"
 
 Bullet::~Bullet() {
-	tft_->drawPixel((uint16_t) dx_, (uint16_t) dy_, ILI9341_BLACK);
+	destroy();
 }
 
 void Bullet::init(Adafruit_ILI9341* tft, float dx, float dy,
@@ -43,14 +43,17 @@ void Bullet::updateVelocity(){
 void Bullet::updateDisplacement() {
 	dx_ += vx_;
 	dy_ += vy_;
+
+	if(!::on_screen(dx_, dy_)) {
+		Serial.println("Despawning bullet");
+		despawn_bullet(this);
+	}
 }
 
 void Bullet::update() {
 	draw(ILI9341_BLACK);
-	dx_ += vx_;
-	dy_ += vy_;
-	vx_ += ax_;
-	vy_ += ay_;
+	updateVelocity();
+	updateDisplacement();
 	draw(BULLET_COLOR);
 }
 

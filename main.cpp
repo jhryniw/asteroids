@@ -7,8 +7,6 @@
 
 #define TFT_DC 9
 #define TFT_CS 10
-#define TFT_WIDTH 320
-#define TFT_HEIGHT 240
 
 Adafruit_ILI9341 tft = Adafruit_ILI9341(TFT_CS, TFT_DC);
 GameState gameState;

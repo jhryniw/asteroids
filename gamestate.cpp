@@ -1,5 +1,28 @@
 #include "gamestate.h"
 
+void spawn_asteroid(Asteroid* asteroid) {
+    gameState.spawn(asteroid);
+}
+
+void spawn_bullet(Bullet* bullet) {
+    gameState.spawn(bullet);
+}
+
+void despawn_asteroid(Asteroid* asteroid) {
+    gameState.despawn(asteroid);
+}
+
+void despawn_bullet(Bullet* bullet) {
+    gameState.despawn(bullet);
+}
+
+/*template<class T>
+void swap(T* a, T* b) {
+    T temp = *a;
+    *a = *b;
+    *b = temp;
+}*/
+
 GameState::GameState() :
     ast_size_(0), bul_size_(0)
 {
@@ -54,14 +77,13 @@ void GameState::despawn(Asteroid* ast)
 {
     int index = ast->index;
 
-    // Swap in the last element
-    swap(&asteroids[index], &asteroids[ast_size_ - 1]);
+    if (index != bul_size_ - 1) {
+        // Swap in the last element
+        asteroids[index] = asteroids[bul_size_ - 1];
 
-    // Update the swapped index
-    asteroids[index].index = index;
-
-    // Delete the object
-    delete ast;
+        // Update the swapped index
+        asteroids[index].index = index;
+    }
 
     ast_size_--;
 }
@@ -70,14 +92,13 @@ void GameState::despawn(Bullet* bul)
 {
     int index = bul->index;
 
-    // Swap in the last element
-    swap(&bullets[index], &bullets[bul_size_ - 1]);
+    if (index != bul_size_ - 1) {
+        // Swap in the last element
+        bullets[index] = bullets[bul_size_ - 1];
 
-    // Update the swapped index
-    bullets[index].index = index;
-
-    // Delete the object
-    delete bul;
+        // Update the swapped index
+        bullets[index].index = index;
+    }
 
     bul_size_--;
 }

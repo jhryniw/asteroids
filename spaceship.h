@@ -4,11 +4,9 @@
 #include <Arduino.h>
 #include <Adafruit_ILI9341.h>
 
+#include "common.h"
 #include "inputs.h"
 #include "bullet.h"
-
-#define TFT_WIDTH 320
-#define TFT_HEIGHT 240
 
 #define SPACESHIP_RADIUS 5
 #define SPACESHIP_COLOR ILI9341_WHITE
@@ -30,15 +28,13 @@ private:
 	float ax_, ay_; // acceleration
 	float sx_, sy_; // direction of ship
 
-	Bullet bullet_;
-
 	Adafruit_ILI9341* tft_;
 
 	void draw(uint16_t color);
-	void updateBullets();
 	void updateAcceleration();
 	void updateVelocity();
 	void updateDisplacement();
+	void fire();
 
 };
 

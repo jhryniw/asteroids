@@ -3,6 +3,7 @@
 
 #include <Arduino.h>
 #include <Adafruit_ILI9341.h>
+#include "common.h"
 
 #define BULLET_COLOR ILI9341_WHITE
 #define BULLET_VEL_MAX_MAG 4
@@ -17,6 +18,7 @@ public:
 		float dir_x, float dir_y);
 	void update();
 	void destroy();
+
 private:
 	float dx_, dy_; // displacement
 	float vx_, vy_; // velocity

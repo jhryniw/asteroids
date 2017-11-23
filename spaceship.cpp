@@ -10,8 +10,6 @@ void Spaceship::init(Adafruit_ILI9341* tft) {
 	ay_ = 0;
 	sx_ = 0;
 	sy_ = -1;
-
-	bullet_.init(tft_, dx_, dy_, sx_, sy_);
 }
 
 void Spaceship::updateAcceleration() {
@@ -60,7 +58,7 @@ void Spaceship::update() {
 	updateAcceleration();
 	updateVelocity();
 	updateDisplacement();
-	updateBullets();
+	fire();
 	draw(SPACESHIP_COLOR);
 }
 
@@ -71,10 +69,10 @@ void Spaceship::draw(uint16_t color) {
 			(uint16_t) dy_+sy_*SPACESHIP_RADIUS, color);
 }
 
-void Spaceship::updateBullets() {
+void Spaceship::fire() {
 	if (getButtonPress(BUTTON_2, true)) {
-		bullet_.destroy();
-		bullet_.init(tft_, dx_, dy_, sx_, sy_);
+		Bullet new_bullet;
+		new_bullet.init(tft_, dx_, dy_, sx_, sy_);
+		::spawn_bullet(&new_bullet);
 	}
-	bullet_.update();
 }
