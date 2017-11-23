@@ -10,7 +10,7 @@
 
 #define SPACESHIP_RADIUS 5
 #define SPACESHIP_COLOR ILI9341_WHITE
-#define SPACESHIP_VEL_MAG_MAX 1
+#define SPACESHIP_VEL_MAG_MAX 2
 #define SPACESHIP_ACC_MAG 0.1
 
 class Spaceship {
@@ -26,7 +26,7 @@ private:
 	float dx_, dy_; // displacement
 	float vx_, vy_; // velocity
 	float ax_, ay_; // acceleration
-	float sx_, sy_; // direction of ship
+	float ux_, uy_; // unit vector of ship direction
 
 	Adafruit_ILI9341* tft_;
 

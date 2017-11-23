@@ -39,6 +39,7 @@ int main() {
 	Asteroid ast2;
 	ast2.initRand(&tft);
 	gameState.spawn(&ast2);
+	float sx, sy; // THE SPACESHIP ACTS AS THE "BULLET" FOR TESTING
 
 	Spaceship ss;
 	ss.init(&tft);
@@ -46,6 +47,7 @@ int main() {
 
 	while (true) {
 		gameState.tick();
+
 		delay(10);
 	}
 

@@ -8,25 +8,25 @@ void Spaceship::init(Adafruit_ILI9341* tft) {
 	vy_ = 0;
 	ax_ = 0;
 	ay_ = 0;
-	sx_ = 0;
-	sy_ = -1;
+	ux_ = 0;
+	uy_ = -1;
 }
 
 void Spaceship::updateAcceleration() {
-	float sx = getJoystickHoriz();
-	float sy = getJoystickVert();
+	float ux = getJoystickHoriz();
+	float uy = getJoystickVert();
 
-	float magnitude = sqrt(sx*sx+sy*sy);
+	float magnitude = sqrt(ux*ux+uy*uy);
 	if (magnitude != 0) {
-		sx = sx/magnitude;
-		sy = sy/magnitude;
-		sx_ = sx;
-		sy_ = sy;
+		ux = ux/magnitude;
+		uy = uy/magnitude;
+		ux_ = ux;
+		uy_ = uy;
 	}
 
 	if (getButtonPress(BUTTON_1, false)) {
-		ax_ = sx_*SPACESHIP_ACC_MAG;
-		ay_ = sy_*SPACESHIP_ACC_MAG;
+		ax_ = ux_*SPACESHIP_ACC_MAG;
+		ay_ = uy_*SPACESHIP_ACC_MAG;
 	}
 	else {
 		ax_ = 0;
@@ -65,14 +65,14 @@ void Spaceship::update() {
 void Spaceship::draw(uint16_t color) {
 	tft_->drawCircle((uint16_t) dx_, (uint16_t) dy_, SPACESHIP_RADIUS, color);
 	tft_->drawLine((uint16_t) dx_, (uint16_t) dy_,
-		(uint16_t) dx_+sx_*SPACESHIP_RADIUS,
-			(uint16_t) dy_+sy_*SPACESHIP_RADIUS, color);
+		(uint16_t) dx_+ux_*SPACESHIP_RADIUS,
+			(uint16_t) dy_+uy_*SPACESHIP_RADIUS, color);
 }
 
 void Spaceship::fire() {
 	if (getButtonPress(BUTTON_2, true)) {
 		Bullet new_bullet;
-		new_bullet.init(tft_, dx_, dy_, sx_, sy_);
+		new_bullet.init(tft_, dx_, dy_, ux_, uy_);
 		::spawn_bullet(&new_bullet);
 	}
 }
