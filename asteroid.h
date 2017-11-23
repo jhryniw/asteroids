@@ -11,7 +11,6 @@
 #define ASTEROID_COLOR ILI9341_WHITE
 #define ASTEROID_VEL_MAG_MIN 0.5
 #define ASTEROID_VEL_MAG_MAX 1.5
-#define MAX_ASTEROIDS 20
 
 #define SPAWN_DIST 15
 #define SPAWN_LEFT (SPAWN_DIST*-1)
@@ -27,6 +26,8 @@
 
 class Asteroid {
 public:
+	int index;
+
 	void init(Adafruit_ILI9341* tft);
 	void init(Adafruit_ILI9341* tft, float dx, float dy);
 	void init(Adafruit_ILI9341* tft, float dx, float dy,

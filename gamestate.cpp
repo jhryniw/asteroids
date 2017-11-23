@@ -1,58 +1,83 @@
 #include "gamestate.h"
 
-GameState::GameState(int max_size) :
-    max_size_(max_size), size_(0)
+GameState::GameState() :
+    ast_size_(0), bul_size_(0)
 {
-    objs_ = new GameObject[max_size];
+    asteroids = new Asteroid[MAX_ASTEROIDS];
+    bullets = new Bullet[MAX_BULLETS];
 }
 
 GameState::~GameState()
 {
-    delete[] objs_;
+    delete[] asteroids;
+    delete[] bullets;
 }
 
-void GameState::spawn(GameObject* obj)
+void GameState::spawn(Asteroid* ast)
 {
-    if (size_ >= max_size_) {
-        Serial.print("Cannot add another object, game state is full!");
+    if (ast_size_ >= MAX_ASTEROIDS) {
+        Serial.print("Cannot add another asteroid, game state is full!");
         return;
     }
 
-    obj->index_ = size_;
-    objs_[size_] = *obj;
-    size_++;
+    ast->index = ast_size_;
+    asteroids[ast_size_] = *ast;
+    ast_size_++;
+}
+
+void GameState::spawn(Bullet* bul)
+{
+    if (bul_size_ >= MAX_BULLETS) {
+        Serial.print("Cannot add another asteroid, game state is full!");
+        return;
+    }
+
+    bul->index = bul_size_;
+    bullets[bul_size_] = *bul;
+    bul_size_++;
 }
 
 void GameState::tick()
 {
-    for(int i = 0; i < size_; i++) {
-        objs_[i].tick();
+    spaceship.update();
+
+    for(int i = 0; i < ast_size_; i++) {
+        asteroids[i].update();
+    }
+
+    for(int i = 0; i < bul_size_; i++) {
+        bullets[i].update();
     }
 }
 
-void swap(GameObject* a, GameObject* b) {
-    GameObject temp = *a;
-    *a = *b;
-    *b = temp;
-}
-
-void GameState::despawn(GameObject* obj)
+void GameState::despawn(Asteroid* ast)
 {
-    int index = obj->index_;
+    int index = ast->index;
 
     // Swap in the last element
-    swap(&objs_[index], &objs_[size_ - 1]);
+    swap(&asteroids[index], &asteroids[ast_size_ - 1]);
 
     // Update the swapped index
-    objs_[index].index_ = index;
+    asteroids[index].index = index;
 
     // Delete the object
-    delete obj;
+    delete ast;
 
-    size_--;
+    ast_size_--;
 }
 
-int GameState::size()
+void GameState::despawn(Bullet* bul)
 {
-    return size_;
+    int index = bul->index;
+
+    // Swap in the last element
+    swap(&bullets[index], &bullets[bul_size_ - 1]);
+
+    // Update the swapped index
+    bullets[index].index = index;
+
+    // Delete the object
+    delete bul;
+
+    bul_size_--;
 }

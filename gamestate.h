@@ -2,23 +2,36 @@
 #define __GAME_STATE_H__
 
 #include <Arduino.h>
-#include "gameobject.h"
+#include "common.h"
+#include "asteroid.h"
+#include "spaceship.h"
+#include "bullet.h"
+
+#define MAX_ASTEROIDS 20
+#define MAX_BULLETS 10
 
 class GameState {
 public:
-    GameState(int max_size);
+    GameState();
     ~GameState();
 
-    void spawn(GameObject* obj);
+    Spaceship spaceship;
+    Asteroid* asteroids;
+    Bullet* bullets;
+
+    void spawn(Asteroid* ast);
+    void spawn(Bullet* bul);
+
     void tick();
-    void despawn(GameObject* obj);
-    int size();
+
+    void despawn(Asteroid* ast);
+    void despawn(Bullet* bul);
 
 private:
-    int max_size_;
-    int size_;
-
-    GameObject* objs_;
+    int ast_size_;
+    int bul_size_;
+    
+    Asteroid* asteroids_;
 };
 
 #endif

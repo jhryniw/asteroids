@@ -10,6 +10,9 @@
 class Bullet {
 public:
 	~Bullet();
+
+	int index;
+
 	void init(Adafruit_ILI9341* tft, float dx, float dy,
 		float dir_x, float dir_y);
 	void update();
