@@ -32,15 +32,20 @@ void setup() {
 int main() {
 	setup();
 
-	Asteroid ast;
-	ast.initRand(&tft);
+	float sx, sy; // THE SPACESHIP ACTS AS THE "BULLET" FOR TESTING
 
 	Spaceship ss;
 	ss.init(&tft);
 
+	Asteroid ast;
+	ast.initRand(&tft);
+
+
+
 	while (true) {
-		ast.update();
-		ss.update();
+		ss.update(&sx, &sy);
+		ast.update(sx, sy);
+
 		delay(10);
 	}
 

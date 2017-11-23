@@ -66,10 +66,24 @@ void Asteroid::initRand(Adafruit_ILI9341* tft) {
 	ax_ = 0;
 	ay_ = 0;
 
-	Serial.print(" vx_: ");
-	Serial.print(vx_);
-	Serial.print(" vy_: ");
-	Serial.println(vy_);
+	point pt[4];
+
+	pt[0].px = -BOX_LEN; pt[0].py = -BOX_LEN;
+	pt[1].px = BOX_LEN; pt[1].py = -BOX_LEN;
+	pt[2].px = BOX_LEN; pt[2].py = BOX_LEN;
+	pt[3].px = -BOX_LEN; pt[3].py = BOX_LEN;
+
+	edge_[0].p1 = pt[0];
+	edge_[0].p2 = pt[1];
+
+	edge_[1].p1 = pt[1];
+	edge_[1].p2 = pt[2];
+
+	edge_[2].p1 = pt[2];
+	edge_[2].p2 = pt[3];
+
+	edge_[3].p1 = pt[0];
+	edge_[3].p2 = pt[3];
 }
 
 void Asteroid::updateAcceleration() {}
@@ -97,14 +111,44 @@ void Asteroid::updateDisplacement() {
 	}
 }
 
-void Asteroid::update() {
+void Asteroid::update(int sx, int sy) {
 	draw(ILI9341_BLACK);
 	updateAcceleration();
 	updateVelocity();
 	updateDisplacement();
 	draw(ASTEROID_COLOR);
+	isHit(sx, sy);
 }
 
 void Asteroid::draw(uint16_t color) {
-	tft_->drawCircle((uint16_t) dx_, (uint16_t) dy_, ASTEROID_RADIUS, color);
+	for (int i = 0; i < NUM_EDGES; i++) {
+		tft_->drawLine(edge_[i].p1.px+dx_, edge_[i].p1.py+dy_,
+			edge_[i].p2.px+dx_, edge_[i].p2.py+dy_, color);
+	}
+
+	//tft_->drawCircle((uint16_t) dx_, (uint16_t) dy_, ASTEROID_RADIUS, color);
+}
+
+bool Asteroid::rayTraceEdge(edge e, int bx, int by) {
+	// Based on https://rosettacode.org/wiki/Ray-casting_algorithm
+	int max_x = max(e.p1.px, e.p2.px)+dx_;
+	//int min_x = min(e.p1.px, e.p2.px);
+	int max_y = max(e.p1.py, e.p2.py)+dy_;
+	int min_y = min(e.p1.py, e.p2.py)+dy_;
+
+	return bx > max_x && by < max_y && by > min_y;
+}
+
+bool Asteroid::isHit(int bx, int by) {
+	int counter = 0;
+
+	for (int i = 0; i < NUM_EDGES; i++) {
+		if (rayTraceEdge(edge_[i], bx, by)) {
+			counter++;
+		}
+	}
+
+	while(counter % 2 == 1) {}
+
+	return counter % 2 == 1;
 }

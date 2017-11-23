@@ -25,6 +25,19 @@
 #define LOOP_UP (LOOP_DIST*-1)
 #define LOOP_DOWN (TFT_HEIGHT+LOOP_DIST)
 
+#define NUM_EDGES 4
+#define BOX_LEN 10
+
+struct point {
+	int px;
+	int py;
+};
+
+struct edge {
+	point p1;
+	point p2;
+};
+
 class Asteroid {
 public:
 	void init(Adafruit_ILI9341* tft);
@@ -33,12 +46,16 @@ public:
 		float vx, float vy);
 	void initRand(Adafruit_ILI9341* tft);
 
-	void update();
+	void update(int sx, int sy);
+	bool isHit(int bx, int by);
 
 private:
 	float dx_, dy_; // displacement
 	float vx_, vy_; // velocity
 	float ax_, ay_; // acceleration
+
+	edge edge_[NUM_EDGES];
+
 
 	Adafruit_ILI9341* tft_;
 
@@ -46,6 +63,8 @@ private:
 	void updateAcceleration();
 	void updateVelocity();
 	void updateDisplacement();
+
+	bool rayTraceEdge(edge e, int bx, int by);
 };
 
 #endif

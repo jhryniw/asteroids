@@ -14,6 +14,7 @@ public:
 		float dir_x, float dir_y);
 	void update();
 	void destroy();
+	
 private:
 	float dx_, dy_; // displacement
 	float vx_, vy_; // velocity
