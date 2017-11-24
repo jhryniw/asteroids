@@ -66,12 +66,12 @@ void Asteroid::initRand(Adafruit_ILI9341* tft) {
 	ax_ = 0;
 	ay_ = 0;
 
-	point pt[4];
-
-	pt[0].x = -BOX_LEN; pt[0].y = -BOX_LEN;
-	pt[1].x = BOX_LEN; pt[1].y = -BOX_LEN;
-	pt[2].x = BOX_LEN; pt[2].y = BOX_LEN;
-	pt[3].x = -BOX_LEN; pt[3].y = BOX_LEN;
+	point pt[] = {
+		{0, 20},
+		{20, 0},
+		{0, -20},
+		{-20, 0}
+	};
 
 	edge_[0].p1 = pt[0];
 	edge_[0].p2 = pt[1];
@@ -111,61 +111,105 @@ void Asteroid::updateDisplacement() {
 	}
 }
 
-void Asteroid::update() {
+void Asteroid::update(float sx, float sy) {
 	draw(ILI9341_BLACK);
 	updateAcceleration();
 	updateVelocity();
 	updateDisplacement();
 	draw(ASTEROID_COLOR);
+	isHit(sx, sy);
 }
 
 void Asteroid::draw(uint16_t color) {
-	for (int i = 0; i < NUM_EDGES; i++) {
+	for (int i = 0; i < 4; i++) {
 		tft_->drawLine(edge_[i].p1.x+dx_, edge_[i].p1.y+dy_,
 			edge_[i].p2.x+dx_, edge_[i].p2.y+dy_, color);
 	}
-
-	//tft_->drawCircle((uint16_t) dx_, (uint16_t) dy_, ASTEROID_RADIUS, color);
 }
 
-bool Asteroid::rayTraceEdge(edge e, float bx, float by) {
-	// Based on https://rosettacode.org/wiki/Ray-casting_algorithm
-	point pa, pb;
+bool Asteroid::rayTraceEdge(edge e, float x, float y) {
+	/*
+		Ray casting based on
+		https://rosettacode.org/wiki/Ray-casting_algorithm
 
-	if (e.p1.x < e.p2.x) {
-		pa = e.p1;
-		pb = e.p2;
-	}
-	else {
-		pa = e.p2;
-		pb = e.p1;
-	}
+		Line intersection based on
+		https://www.topcoder.com/community/data-science/data-science-tutorials/
+		geometry-concepts-line-intersection-and-its-applications/
+	*/
 
-	if (pa.y == pb.y || by-dy_ > max(pa.y, pb.y) || by-dy_ < min(pa.y, pb.y)) {
-		return false;
-	}
+	float tx = x - dx_;
+	float ty = y - dy_;
 
-	if (pa.x == pb.x) {
-		return bx-dx_ >= pa.x;
+	if (e.p1.y == e.p2.y || tx < min(e.p1.x, e.p2.x) ||
+		ty > max(e.p1.y, e.p2.y) || ty < min(e.p1.y, e.p2.y)) {
+			return false;
 	}
 
-	//pb (5,1) pa(2,7)
-	double m_at_bx = (pb.y - pa.y) / (pb.x - pa.x);
-	double x_at_by = m_at_bx * (by-dx_ - pb.y) + pb.x;
+	if (tx > max(e.p1.x, e.p2.x)) {
+		return true;
+	}
 
-	return bx-dx_ >= x_at_by;
+	float a1 = e.p2.y - e.p1.y;
+	float b1 = e.p1.x - e.p2.x;
+	float c1 = a1 * e.p1.x + b1 * e.p1.y;
+
+	// float a1 = 0;
+	float b2 = -tx;
+	float c2 = b2 * ty;
+
+	float det = a1 * b2;
+
+	// since parallel lines return false, det != 0
+	float x_min = (b2 * c1 - b1 * c2) / det;
+
+	/*
+	Serial.println("-");
+	Serial.print("x1: ");
+	Serial.print(e.p1.x);
+	Serial.print(" y1: ");
+	Serial.print(e.p1.y);
+	Serial.print(" x2: ");
+	Serial.print(e.p2.x);
+	Serial.print(" y2: ");
+	Serial.println(e.p2.y);
+	Serial.print("a1: ");
+	Serial.print(a1);
+	Serial.print(" b1: ");
+	Serial.print(b1);
+	Serial.print(" c1: ");
+	Serial.print(c1);
+	Serial.print(" a2: ");
+	Serial.print(a2);
+	Serial.print(" b2: ");
+	Serial.print(b2);
+	Serial.print(" c2: ");
+	Serial.print(c2);
+	Serial.print(" det: ");
+	Serial.println(det);
+	Serial.print("tx: ");
+	Serial.print(tx);
+	Serial.print(" ty: ");
+	Serial.print(ty);
+	Serial.print(" max x: ");
+	Serial.println(x_threshold);
+	Serial.println("-");
+	*/
+	return tx >= x_min;
 }
 
 bool Asteroid::isHit(float bx, float by) {
 	int counter = 0;
 
-	for (int i = 0; i < NUM_EDGES; i++) {
+	for (int i = 0; i < 4; i++) {
 		if (rayTraceEdge(edge_[i], bx, by)) {
 			counter++;
 		}
 	}
 
-	while(counter % 2 == 1) {}
+	if (counter % 2 == 1) {
+		Serial.println("hit");
+		while (true) {}
+	}
 
 	return counter % 2 == 1;
 }

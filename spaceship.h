@@ -10,7 +10,7 @@
 
 #define SPACESHIP_RADIUS 5
 #define SPACESHIP_COLOR ILI9341_WHITE
-#define SPACESHIP_VEL_MAG_MAX 2
+#define SPACESHIP_VEL_MAG_MAX 1.5
 #define SPACESHIP_ACC_MAG 0.1
 
 class Spaceship {
@@ -20,7 +20,7 @@ public:
 	void init(Adafruit_ILI9341* tft, float dx, float dy,
 		float vx, float vy, float ax, float ay);
 
-	void update();
+	void update(float &x, float &y);
 
 private:
 	float dx_, dy_; // displacement

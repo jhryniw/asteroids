@@ -53,13 +53,15 @@ void Spaceship::updateDisplacement() {
 	}
 }
 
-void Spaceship::update() {
+void Spaceship::update(float &sx, float &sy) {
 	draw(ILI9341_BLACK);
 	updateAcceleration();
 	updateVelocity();
 	updateDisplacement();
 	fire();
 	draw(SPACESHIP_COLOR);
+	sx = dx_;
+	sy = dy_;
 }
 
 void Spaceship::draw(uint16_t color) {

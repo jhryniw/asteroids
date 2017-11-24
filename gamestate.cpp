@@ -62,10 +62,12 @@ void GameState::spawn(Bullet* bul)
 
 void GameState::tick()
 {
-    spaceship.update();
+    float sx, sy;
+
+    spaceship.update(sx,sy);
 
     for(int i = 0; i < ast_size_; i++) {
-        asteroids[i].update();
+        asteroids[i].update(sx, sy);
     }
 
     for(int i = 0; i < bul_size_; i++) {
