@@ -26,8 +26,8 @@
 #define BOX_LEN 10
 
 struct point {
-	int px;
-	int py;
+	float x;
+	float y;
 };
 
 struct edge {
@@ -46,7 +46,7 @@ public:
 	void initRand(Adafruit_ILI9341* tft);
 
 	void update();
-	bool isHit(int bx, int by);
+	bool isHit(float bx, float by);
 
 private:
 	float dx_, dy_; // displacement
@@ -63,7 +63,7 @@ private:
 	void updateVelocity();
 	void updateDisplacement();
 
-	bool rayTraceEdge(edge e, int bx, int by);
+	bool rayTraceEdge(edge e, float bx, float by);
 };
 
 #endif
