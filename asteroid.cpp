@@ -66,12 +66,12 @@ void Asteroid::initRand(Adafruit_ILI9341* tft) {
 	ax_ = 0;
 	ay_ = 0;
 
-	point pt[4];
-
-	pt[0].x = -BOX_LEN; pt[0].y = -BOX_LEN;
-	pt[1].x = BOX_LEN; pt[1].y = -BOX_LEN;
-	pt[2].x = BOX_LEN; pt[2].y = BOX_LEN;
-	pt[3].x = -BOX_LEN; pt[3].y = BOX_LEN;
+	point pt[] = {
+		{0, 20},
+		{20, 0},
+		{0, -20},
+		{-20, 0}
+	};
 
 	edge_[0].p1 = pt[0];
 	edge_[0].p2 = pt[1];
@@ -120,21 +120,19 @@ void Asteroid::update() {
 }
 
 void Asteroid::draw(uint16_t color) {
-	for (int i = 0; i < NUM_EDGES; i++) {
+	for (int i = 0; i < 4; i++) {
 		tft_->drawLine(edge_[i].p1.x+dx_, edge_[i].p1.y+dy_,
 			edge_[i].p2.x+dx_, edge_[i].p2.y+dy_, color);
 	}
-
-	//tft_->drawCircle((uint16_t) dx_, (uint16_t) dy_, ASTEROID_RADIUS, color);
 }
 
-bool Asteroid::isHit(int bx, int by) {
+bool Asteroid::isHit(float bx, float by) {
 	polygon ast;
 
 	point center(dx_, dy_);
 	ast.centroid = center;
 	ast.edges = edge_;
-	ast.nedges = NUM_EDGES;
+	ast.nedges = 4;
 
 	point p(bx, by);
 

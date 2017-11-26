@@ -7,11 +7,11 @@
 #define TFT_HEIGHT 240
 
 struct point {
-	int x;
-	int y;
+	float x;
+	float y;
 
     point() : x(0), y(0) {};
-    point(int x, int y) : x(x), y(y) {}
+    point(float x, float y) : x(x), y(y) {}
 };
 
 struct edge {

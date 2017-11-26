@@ -4,10 +4,9 @@
 #include <Adafruit_ILI9341.h>
 #include "common.h"
 
-#define ASTEROID_RADIUS 5
 #define ASTEROID_COLOR ILI9341_WHITE
 #define ASTEROID_VEL_MAG_MIN 0.5
-#define ASTEROID_VEL_MAG_MAX 1.5
+#define ASTEROID_VEL_MAG_MAX 1
 
 #define SPAWN_DIST 15
 #define SPAWN_LEFT (SPAWN_DIST*-1)
@@ -21,8 +20,6 @@
 #define LOOP_UP (LOOP_DIST*-1)
 #define LOOP_DOWN (TFT_HEIGHT+LOOP_DIST)
 
-#define NUM_EDGES 4
-#define BOX_LEN 10
 
 class Asteroid {
 public:
@@ -35,15 +32,14 @@ public:
 	void initRand(Adafruit_ILI9341* tft);
 
 	void update();
-	bool isHit(int bx, int by);
+	bool isHit(float x, float y);
 
 private:
 	float dx_, dy_; // displacement
 	float vx_, vy_; // velocity
 	float ax_, ay_; // acceleration
 
-	edge edge_[NUM_EDGES];
-
+	edge edge_[4];
 
 	Adafruit_ILI9341* tft_;
 
