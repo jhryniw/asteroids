@@ -1,7 +1,6 @@
 #ifndef __ASTEROID_H__
 #define __ASTEROID_H__
 
-#include <Arduino.h>
 #include <Adafruit_ILI9341.h>
 #include "common.h"
 
@@ -24,16 +23,6 @@
 
 #define NUM_EDGES 4
 #define BOX_LEN 10
-
-struct point {
-	int px;
-	int py;
-};
-
-struct edge {
-	point p1;
-	point p2;
-};
 
 class Asteroid {
 public:
@@ -62,8 +51,6 @@ private:
 	void updateAcceleration();
 	void updateVelocity();
 	void updateDisplacement();
-
-	bool rayTraceEdge(edge e, int bx, int by);
 };
 
 #endif

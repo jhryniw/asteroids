@@ -68,10 +68,10 @@ void Asteroid::initRand(Adafruit_ILI9341* tft) {
 
 	point pt[4];
 
-	pt[0].px = -BOX_LEN; pt[0].py = -BOX_LEN;
-	pt[1].px = BOX_LEN; pt[1].py = -BOX_LEN;
-	pt[2].px = BOX_LEN; pt[2].py = BOX_LEN;
-	pt[3].px = -BOX_LEN; pt[3].py = BOX_LEN;
+	pt[0].x = -BOX_LEN; pt[0].y = -BOX_LEN;
+	pt[1].x = BOX_LEN; pt[1].y = -BOX_LEN;
+	pt[2].x = BOX_LEN; pt[2].y = BOX_LEN;
+	pt[3].x = -BOX_LEN; pt[3].y = BOX_LEN;
 
 	edge_[0].p1 = pt[0];
 	edge_[0].p2 = pt[1];
@@ -121,33 +121,22 @@ void Asteroid::update() {
 
 void Asteroid::draw(uint16_t color) {
 	for (int i = 0; i < NUM_EDGES; i++) {
-		tft_->drawLine(edge_[i].p1.px+dx_, edge_[i].p1.py+dy_,
-			edge_[i].p2.px+dx_, edge_[i].p2.py+dy_, color);
+		tft_->drawLine(edge_[i].p1.x+dx_, edge_[i].p1.y+dy_,
+			edge_[i].p2.x+dx_, edge_[i].p2.y+dy_, color);
 	}
 
 	//tft_->drawCircle((uint16_t) dx_, (uint16_t) dy_, ASTEROID_RADIUS, color);
 }
 
-bool Asteroid::rayTraceEdge(edge e, int bx, int by) {
-	// Based on https://rosettacode.org/wiki/Ray-casting_algorithm
-	int max_x = max(e.p1.px, e.p2.px)+dx_;
-	//int min_x = min(e.p1.px, e.p2.px);
-	int max_y = max(e.p1.py, e.p2.py)+dy_;
-	int min_y = min(e.p1.py, e.p2.py)+dy_;
-
-	return bx > max_x && by < max_y && by > min_y;
-}
-
 bool Asteroid::isHit(int bx, int by) {
-	int counter = 0;
+	polygon ast;
 
-	for (int i = 0; i < NUM_EDGES; i++) {
-		if (rayTraceEdge(edge_[i], bx, by)) {
-			counter++;
-		}
-	}
+	point center(dx_, dy_);
+	ast.centroid = center;
+	ast.edges = edge_;
+	ast.nedges = NUM_EDGES;
 
-	while(counter % 2 == 1) {}
+	point p(bx, by);
 
-	return counter % 2 == 1;
+	return ::is_collision(p, ast);
 }
