@@ -70,6 +70,14 @@ void GameState::tick()
 
     for(int i = 0; i < bul_size_; i++) {
         bullets[i].update();
+
+        for(int j = 0; j < ast_size_; j++) {
+            bool hit = asteroids[j].isHit(bullets[i].getPosition());
+            if(hit) {
+                asteroids[j].destroy();
+                despawn(&asteroids[j]);
+            }
+        }
     }
 }
 

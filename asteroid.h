@@ -32,7 +32,8 @@ public:
 	void initRand(Adafruit_ILI9341* tft);
 
 	void update();
-	bool isHit(float x, float y);
+	void destroy();
+	bool isHit(point b);
 
 private:
 	float dx_, dy_; // displacement

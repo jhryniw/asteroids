@@ -19,6 +19,8 @@ public:
 	void update();
 	void destroy();
 
+	point getPosition();
+
 private:
 	float dx_, dy_; // displacement
 	float vx_, vy_; // velocity

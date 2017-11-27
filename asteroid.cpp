@@ -119,6 +119,10 @@ void Asteroid::update() {
 	draw(ASTEROID_COLOR);
 }
 
+void Asteroid::destroy() {
+	draw(ILI9341_BLACK);
+}
+
 void Asteroid::draw(uint16_t color) {
 	for (int i = 0; i < 4; i++) {
 		tft_->drawLine(edge_[i].p1.x+dx_, edge_[i].p1.y+dy_,
@@ -126,7 +130,7 @@ void Asteroid::draw(uint16_t color) {
 	}
 }
 
-bool Asteroid::isHit(float bx, float by) {
+bool Asteroid::isHit(point b) {
 	polygon ast;
 
 	point center(dx_, dy_);
@@ -134,7 +138,5 @@ bool Asteroid::isHit(float bx, float by) {
 	ast.edges = edge_;
 	ast.nedges = 4;
 
-	point p(bx, by);
-
-	return ::is_collision(p, ast);
+	return ::is_collision(b, ast);
 }

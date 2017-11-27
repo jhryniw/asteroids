@@ -33,6 +33,10 @@ void Bullet::destroy() {
 	draw(ILI9341_BLACK);
 }
 
+point Bullet::getPosition() {
+	return point(dx_, dy_);
+}
+
 void Bullet::updateAcceleration() {}
 
 void Bullet::updateVelocity(){
