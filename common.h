@@ -10,6 +10,11 @@
 	#define PI 3.14159265
 #endif
 
+template <typename T>
+T sign(T value) {
+	return T((value>0)-(value<0));
+}
+
 struct vector2d {
 	float x;
 	float y;
