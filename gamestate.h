@@ -12,12 +12,13 @@
 
 class GameState {
 public:
-    GameState();
+    GameState(Adafruit_ILI9341* tft);
     ~GameState();
 
     Spaceship spaceship;
     Asteroid* asteroids;
     Bullet* bullets;
+    int score;
 
     void spawn(Asteroid* ast);
     void spawn(Bullet* bul);
@@ -25,7 +26,9 @@ public:
     void despawn(Asteroid* ast);
     void despawn(Bullet* bul);
 
-    void tick();
+    void drawScore();
+
+    void tick(float dt);
 
     bool hasMaxAsteroids();
     bool hasMaxBullets();
@@ -33,9 +36,14 @@ public:
     int numAsteroids();
     int numBullets();
 
+    void checkCollisions();
+
+    void gameOver();
+
 private:
     int ast_size_;
     int bul_size_;
+    Adafruit_ILI9341* tft_;
 };
 
 extern GameState gameState;

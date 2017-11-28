@@ -45,6 +45,8 @@ void Asteroid::initRand() {
 	sign = random(2)*2-1;
 	vel.y = random(ASTEROID_VEL_MAG_MIN*100, ASTEROID_VEL_MAG_MAX*100+1);
 	vel.y = vel.y/100*sign;
+
+	size = 3;
 }
 
 void Asteroid::updateAcceleration() {}
@@ -79,7 +81,8 @@ void Asteroid::generate_polygon(int size) {
 	point first_point, last_point;
 
 	for (int v = 0; v < sides; v++) {
-		float vertex_size = random(5, 25);
+		int rand_num = random(20, 40);
+		float vertex_size = rand_num*rand_num/100*size;
 		float vertex_angle = angular_step * v + angular_step / 3 * random(1);
 
 		if (v == 0) {

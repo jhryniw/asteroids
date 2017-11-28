@@ -31,6 +31,7 @@ public:
 	void destroy();
 	bool isHit(point b);
 
+	int size;
 	int index;
 
 private:

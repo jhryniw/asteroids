@@ -24,11 +24,12 @@ void swap(T* a, T* b) {
     *b = temp;
 }*/
 
-GameState::GameState() :
-    ast_size_(0), bul_size_(0)
+GameState::GameState(Adafruit_ILI9341* tft) :
+    ast_size_(0), bul_size_(0), tft_(tft)
 {
     asteroids = (Asteroid *) malloc(sizeof(Asteroid) * MAX_ASTEROIDS);
     bullets = (Bullet *) malloc(sizeof(Bullet) * MAX_BULLETS);
+    score = 0;
 }
 
 GameState::~GameState()
@@ -61,9 +62,17 @@ void GameState::spawn(Bullet* bul)
     bul_size_++;
 }
 
-void GameState::tick()
+void GameState::drawScore() {
+  tft_->setCursor(10, 10);
+  tft_->setTextColor(ILI9341_WHITE, ILI9341_BLACK);
+  tft_->setTextSize(3);
+
+  tft_->print(score);
+}
+
+void GameState::tick(float dt)
 {
-    spaceship.update();
+    spaceship.update(dt);
 
     for(int i = 0; i < ast_size_; i++) {
         asteroids[i].update();
@@ -73,16 +82,9 @@ void GameState::tick()
         bullets[i].update();
     }
 
-    // Collisions
-    for(int i = 0; i < ast_size_; i++) {
-        for(int j = 0; j < bul_size_; j++) {
-            if(asteroids[i].isHit(bullets[j].getPosition())) {
-                despawn(&asteroids[i]);
-                despawn(&bullets[j]);
-                break;
-            }
-        }
-    }
+    checkCollisions();
+
+    drawScore();
 }
 
 void GameState::despawn(Asteroid* ast)
@@ -115,6 +117,19 @@ void GameState::despawn(Bullet* bul)
     }
 
     bul_size_--;
+}
+
+void GameState::checkCollisions() {
+  for(int i = 0; i < ast_size_; i++) {
+      for(int j = 0; j < bul_size_; j++) {
+          if(asteroids[i].isHit(bullets[j].getPosition())) {
+              score += asteroids[i].size*100/3;
+              despawn(&asteroids[i]);
+              despawn(&bullets[j]);
+              break;
+          }
+      }
+  }
 }
 
 bool GameState::hasMaxAsteroids()

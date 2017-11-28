@@ -9,7 +9,10 @@
 #define TFT_CS 10
 
 Adafruit_ILI9341 tft = Adafruit_ILI9341(TFT_CS, TFT_DC);
-GameState gameState;
+GameState gameState(&tft);
+
+float prevTime;
+float deltaTime;
 
 void setup() {
 	init();
@@ -32,9 +35,14 @@ void setup() {
 int main() {
 	setup();
 
+	deltaTime = (millis() - prevTime) / 100;
+	prevTime = millis() / 100;
+
+	gameState.drawScore();
+
 	while (true) {
 		unsigned long start = millis();
-		gameState.tick();
+		gameState.tick(deltaTime);
 
 		if(!gameState.hasMaxAsteroids() && random(1000) < (MAX_ASTEROIDS - gameState.numAsteroids())) {
 			Asteroid a;

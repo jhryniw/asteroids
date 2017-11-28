@@ -10,7 +10,7 @@
 
 #define SPACESHIP_RADIUS 5
 #define SPACESHIP_COLOR ILI9341_CYAN
-#define SPACESHIP_VEL_MAG_MAX 1.5
+#define SPACESHIP_VEL_MAG_MAX (1.5/5)
 #define SPACESHIP_ACC_MAG 0.1
 
 extern Adafruit_ILI9341 tft;
@@ -20,7 +20,7 @@ public:
 	Spaceship();
 	~Spaceship();
 
-	void update();
+	void update(float dt);
 
 private:
 	point pos;    // position
@@ -32,8 +32,8 @@ private:
 
 	void draw(uint16_t color);
 	void updateAcceleration();
-	void updateVelocity();
-	void updateDisplacement();
+	void updateVelocity(float dt);
+	void updateDisplacement(float dt);
 	void fire();
 
 };

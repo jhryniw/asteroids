@@ -32,14 +32,15 @@ void Spaceship::updateAcceleration() {
 	}
 }
 
-void Spaceship::updateVelocity() {
-	vel.x = constrain(vel.x+acc.x, -SPACESHIP_VEL_MAG_MAX, SPACESHIP_VEL_MAG_MAX);
-	vel.y = constrain(vel.y+acc.y, -SPACESHIP_VEL_MAG_MAX, SPACESHIP_VEL_MAG_MAX);
+void Spaceship::updateVelocity(float dt) {
+  Serial.println(dt);
+	vel.x = constrain(vel.x+acc.x*dt, -SPACESHIP_VEL_MAG_MAX, SPACESHIP_VEL_MAG_MAX);
+	vel.y = constrain(vel.y+acc.y*dt, -SPACESHIP_VEL_MAG_MAX, SPACESHIP_VEL_MAG_MAX);
 }
 
-void Spaceship::updateDisplacement() {
-	pos.x = constrain(pos.x+vel.x, 0, TFT_WIDTH);
-	pos.y = constrain(pos.y+vel.y, 0, TFT_HEIGHT);
+void Spaceship::updateDisplacement(float dt) {
+	pos.x = constrain(pos.x+vel.x*dt, 0, TFT_WIDTH);
+	pos.y = constrain(pos.y+vel.y*dt, 0, TFT_HEIGHT);
 
 	if (pos.x == 0 || pos.x == TFT_WIDTH) {
 		vel.x = 0;
@@ -51,11 +52,11 @@ void Spaceship::updateDisplacement() {
 	}
 }
 
-void Spaceship::update() {
+void Spaceship::update(float dt) {
 	draw(ILI9341_BLACK);
 	updateAcceleration();
-	updateVelocity();
-	updateDisplacement();
+	updateVelocity(dt);
+	updateDisplacement(dt);
 	fire();
 	draw(SPACESHIP_COLOR);
 }
