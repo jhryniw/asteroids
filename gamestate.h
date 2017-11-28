@@ -30,7 +30,6 @@ public:
 private:
     int ast_size_;
     int bul_size_;
-    
 };
 
 extern GameState gameState;

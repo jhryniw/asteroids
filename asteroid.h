@@ -34,8 +34,8 @@ public:
 	int index;
 
 private:
-	vector2 vel;  // velocity
-	vector2 acc;  // acceleration
+	vector2d vel;  // velocity
+	vector2d acc;  // acceleration
 
 	void initRand();
 	void generate_polygon(int size);

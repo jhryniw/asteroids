@@ -1,15 +1,14 @@
 #include "spaceship.h"
 
-void Spaceship::init(Adafruit_ILI9341* tft) {
-	tft_ = tft;
-	dx_ = 200;
-	dy_ = 200;
-	vx_ = 0;
-	vy_ = 0;
-	ax_ = 0;
-	ay_ = 0;
-	ux_ = 0;
-	uy_ = -1;
+Spaceship::Spaceship()
+ : pos(TFT_WIDTH/2, TFT_HEIGHT/2), u(0, 1)
+{
+
+}
+
+Spaceship::~Spaceship()
+{
+
 }
 
 void Spaceship::updateAcceleration() {
@@ -20,36 +19,35 @@ void Spaceship::updateAcceleration() {
 	if (magnitude != 0) {
 		ux = ux/magnitude;
 		uy = uy/magnitude;
-		ux_ = ux;
-		uy_ = uy;
+		u = vector2d(ux, uy);
 	}
 
 	if (getButtonPress(BUTTON_1, false)) {
-		ax_ = ux_*SPACESHIP_ACC_MAG;
-		ay_ = uy_*SPACESHIP_ACC_MAG;
+		acc.x = u.x*SPACESHIP_ACC_MAG;
+		acc.y = u.y*SPACESHIP_ACC_MAG;
 	}
 	else {
-		ax_ = 0;
-		ay_ = 0;
+		acc.x = 0;
+		acc.y = 0;
 	}
 }
 
 void Spaceship::updateVelocity() {
-	vx_ = constrain(vx_+ax_, -SPACESHIP_VEL_MAG_MAX, SPACESHIP_VEL_MAG_MAX);
-	vy_ = constrain(vy_+ay_, -SPACESHIP_VEL_MAG_MAX, SPACESHIP_VEL_MAG_MAX);
+	vel.x = constrain(vel.x+acc.x, -SPACESHIP_VEL_MAG_MAX, SPACESHIP_VEL_MAG_MAX);
+	vel.y = constrain(vel.y+acc.y, -SPACESHIP_VEL_MAG_MAX, SPACESHIP_VEL_MAG_MAX);
 }
 
 void Spaceship::updateDisplacement() {
-	dx_ = constrain(dx_+vx_, 0, TFT_WIDTH);
-	dy_ = constrain(dy_+vy_, 0, TFT_HEIGHT);
+	pos.x = constrain(pos.x+vel.x, 0, TFT_WIDTH);
+	pos.y = constrain(pos.y+vel.y, 0, TFT_HEIGHT);
 
-	if (dx_ == 0 || dx_ == TFT_WIDTH) {
-		vx_ = 0;
-		ax_ = 0;
+	if (pos.x == 0 || pos.x == TFT_WIDTH) {
+		vel.x = 0;
+		acc.x = 0;
 	}
-	if (dy_ == 0 || dy_ == TFT_HEIGHT) {
-		vy_ = 0;
-		ay_ = 0;
+	if (pos.y == 0 || pos.y == TFT_HEIGHT) {
+		vel.y = 0;
+		acc.y = 0;
 	}
 }
 
@@ -63,16 +61,15 @@ void Spaceship::update() {
 }
 
 void Spaceship::draw(uint16_t color) {
-	tft_->drawCircle((uint16_t) dx_, (uint16_t) dy_, SPACESHIP_RADIUS, color);
-	tft_->drawLine((uint16_t) dx_, (uint16_t) dy_,
-		(uint16_t) dx_+ux_*SPACESHIP_RADIUS,
-			(uint16_t) dy_+uy_*SPACESHIP_RADIUS, color);
+	tft.drawCircle((uint16_t) pos.x, (uint16_t) pos.y, SPACESHIP_RADIUS, color);
+	tft.drawLine((uint16_t) pos.x, (uint16_t) pos.y,
+		(uint16_t) pos.x+u.x*SPACESHIP_RADIUS,
+			(uint16_t) pos.y+u.y*SPACESHIP_RADIUS, color);
 }
 
 void Spaceship::fire() {
 	if (getButtonPress(BUTTON_2, true)) {
-		Bullet new_bullet;
-		new_bullet.init(tft_, dx_, dy_, ux_, uy_);
+		Bullet new_bullet(pos, u);
 		::spawn_bullet(&new_bullet);
 	}
 }

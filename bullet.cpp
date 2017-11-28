@@ -1,32 +1,22 @@
 #include "bullet.h"
 
-Bullet::~Bullet() {
-	destroy();
-}
+Bullet::Bullet(point start_pos, vector2d start_vel)
+	: pos(start_pos), vel(start_vel)
+{
+	float magnitude = sqrt(vel.x*vel.x+vel.y*vel.y);
 
-void Bullet::init(Adafruit_ILI9341* tft, float dx, float dy,
-	float dir_x, float dir_y) {
-
-	tft_ = tft;
-	dx_ = dx;
-	dy_ = dy;
-	ax_ = 0;
-	ay_ = 0;
-
-	float vx = dir_x;
-	float vy = dir_y;
-	float magnitude = sqrt(vx*vx+vy*vy);
 	if (magnitude != 0) {
-		vx = vx/magnitude*BULLET_VEL_MAX_MAG;
-		vy = vy/magnitude*BULLET_VEL_MAX_MAG;
+		vel.x = vel.x/magnitude*BULLET_VEL_MAX_MAG;
+		vel.y = vel.y/magnitude*BULLET_VEL_MAX_MAG;
 	}
 	else {
-		vx = -1;
-		vy = -1;
+		vel.x = -1;
+		vel.y = -1;
 	}
+}
 
-	vx_ = vx;
-	vy_ = vy;
+Bullet::~Bullet() {
+	destroy();
 }
 
 void Bullet::destroy() {
@@ -34,21 +24,21 @@ void Bullet::destroy() {
 }
 
 point Bullet::getPosition() {
-	return point(dx_, dy_);
+	return pos;
 }
 
 void Bullet::updateAcceleration() {}
 
 void Bullet::updateVelocity(){
-	vx_ += ax_;
-	vy_ += ay_;
+	vel.x += acc.x;
+	vel.y += acc.y;
 }
 
 void Bullet::updateDisplacement() {
-	dx_ += vx_;
-	dy_ += vy_;
+	pos.x += vel.x;
+	pos.y += vel.y;
 
-	if(!::on_screen(dx_, dy_)) {
+	if(!::on_screen(pos.x, pos.y)) {
 		Serial.println("Despawning bullet");
 		despawn_bullet(this);
 	}
@@ -62,5 +52,5 @@ void Bullet::update() {
 }
 
 void Bullet::draw(uint16_t color) {
-	tft_->drawPixel((uint16_t) dx_, (uint16_t) dy_, color);
+	tft.drawPixel((uint16_t) pos.x, (uint16_t) pos.y, color);
 }

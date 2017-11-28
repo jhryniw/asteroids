@@ -10,16 +10,16 @@
 	#define PI 3.14159265
 #endif
 
-struct vector2 {
+struct vector2d {
 	float x;
 	float y;
 
-    vector2() : x(0), y(0) {};
-    vector2(float x, float y) : x(x), y(y) {}
+    vector2d() : x(0), y(0) {}
+    vector2d(float x, float y) : x(x), y(y) {}
 };
 
 // Points are the same struct definition as 2d vectors
-typedef vector2 point;
+typedef vector2d point;
 
 struct edge {
 	point p1;

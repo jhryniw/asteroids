@@ -26,14 +26,14 @@ void swap(T* a, T* b) {
 GameState::GameState() :
     ast_size_(0), bul_size_(0)
 {
-    asteroids = new Asteroid[MAX_ASTEROIDS];
-    bullets = new Bullet[MAX_BULLETS];
+    asteroids = (Asteroid *) malloc(sizeof(Asteroid) * MAX_ASTEROIDS);
+    bullets = (Bullet *) malloc(sizeof(Bullet) * MAX_BULLETS);
 }
 
 GameState::~GameState()
 {
-    delete[] asteroids;
-    delete[] bullets;
+    free(asteroids);
+    free(bullets);
 }
 
 void GameState::spawn(Asteroid* ast)

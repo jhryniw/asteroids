@@ -36,10 +36,6 @@ int main() {
 	gameState.spawn(&ast);
 	gameState.spawn(&ast2);
 
-	Spaceship ss;
-	ss.init(&tft);
-	gameState.spaceship = ss;
-
 	while (true) {
 		gameState.tick();
 
