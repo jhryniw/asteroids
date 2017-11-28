@@ -32,14 +32,17 @@ void setup() {
 int main() {
 	setup();
 
-	Asteroid ast, ast2;
-	gameState.spawn(&ast);
-	gameState.spawn(&ast2);
-
 	while (true) {
+		unsigned long start = millis();
 		gameState.tick();
 
-		delay(10);
+		if(!gameState.hasMaxAsteroids() && random(1000) < (MAX_ASTEROIDS - gameState.numAsteroids())) {
+			Asteroid a;
+			spawn_asteroid(&a);
+		}
+
+		unsigned long run_time = millis() - start;
+		delay(max(10 - (long)run_time, 0));
 	}
 
 	return 0;

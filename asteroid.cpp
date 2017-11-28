@@ -13,6 +13,7 @@ Asteroid::~Asteroid()
 
 void Asteroid::initRand() {
 	sides = floor(random(4, 7));
+
 	edges = new edge[sides];
 	generate_polygon(1);
 
@@ -78,7 +79,7 @@ void Asteroid::generate_polygon(int size) {
 	point first_point, last_point;
 
 	for (int v = 0; v < sides; v++) {
-		float vertex_size = random(8, 25);
+		float vertex_size = random(5, 25);
 		float vertex_angle = angular_step * v + angular_step / 3 * random(1);
 
 		if (v == 0) {
@@ -87,6 +88,7 @@ void Asteroid::generate_polygon(int size) {
 		else {
 			point next_point = point(vertex_size * cos(vertex_angle), vertex_size * sin(vertex_angle));
 			edges[v-1] = edge(last_point, next_point);
+			last_point = next_point;
 		}
 	}
 

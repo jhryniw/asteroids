@@ -2,6 +2,7 @@
 
 void spawn_asteroid(Asteroid* asteroid) {
     gameState.spawn(asteroid);
+    Serial.println(asteroid->index);
 }
 
 void spawn_bullet(Bullet* bullet) {
@@ -89,9 +90,9 @@ void GameState::despawn(Asteroid* ast)
     int index = ast->index;
     ast->destroy();
 
-    if (index != bul_size_ - 1) {
+    if (index != ast_size_ - 1) {
         // Swap in the last element
-        asteroids[index] = asteroids[bul_size_ - 1];
+        asteroids[index] = asteroids[ast_size_ - 1];
 
         // Update the swapped index
         asteroids[index].index = index;
@@ -114,4 +115,24 @@ void GameState::despawn(Bullet* bul)
     }
 
     bul_size_--;
+}
+
+bool GameState::hasMaxAsteroids()
+{
+    return ast_size_ >= MAX_ASTEROIDS;
+}
+
+bool GameState::hasMaxBullets()
+{
+    return bul_size_ >= MAX_BULLETS;
+}
+
+int GameState::numAsteroids()
+{
+    return ast_size_;
+}
+
+int GameState::numBullets()
+{
+    return bul_size_;
 }

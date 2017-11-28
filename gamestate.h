@@ -7,8 +7,8 @@
 #include "spaceship.h"
 #include "bullet.h"
 
-#define MAX_ASTEROIDS 20
-#define MAX_BULLETS 10
+#define MAX_ASTEROIDS 8
+#define MAX_BULLETS 20
 
 class GameState {
 public:
@@ -22,10 +22,16 @@ public:
     void spawn(Asteroid* ast);
     void spawn(Bullet* bul);
 
-    void tick();
-
     void despawn(Asteroid* ast);
     void despawn(Bullet* bul);
+
+    void tick();
+
+    bool hasMaxAsteroids();
+    bool hasMaxBullets();
+
+    int numAsteroids();
+    int numBullets();
 
 private:
     int ast_size_;
