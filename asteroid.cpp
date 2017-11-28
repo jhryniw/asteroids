@@ -1,114 +1,96 @@
 #include "asteroid.h"
 
-void Asteroid::init(Adafruit_ILI9341* tft) {
-	tft_ = tft;
-	dx_ = 100;
-	dy_ = 100;
-	vx_ = -0.5;
-	vy_ = -0.5;
-	ax_ = 0;
-	ay_ = 0;
+Asteroid::Asteroid()
+	: polygon()
+{
+	initRand();
 }
 
-void Asteroid::init(Adafruit_ILI9341* tft, float dx, float dy) {
-	tft_ = tft;
-	dx_ = dx;
-	dy_ = dy;
-	vx_ = -0.5;
-	vy_ = -0.5;
-	ax_ = 0;
-	ay_ = 0;
+Asteroid::~Asteroid()
+{
+
 }
 
-void Asteroid::init(Adafruit_ILI9341* tft, float dx, float dy,
-	float vx, float vy) {
+void Asteroid::initRand() {
+	sides = floor(random(4, 7));
+	edges = new edge[sides];
+	generate_polygon(1);
 
-	tft_ = tft;
-	dx_ = dx;
-	dy_ = dy;
-	vx_ = vx;
-	vy_ = vy;
-	ax_ = 0;
-	ay_ = 0;
-}
-
-void Asteroid::initRand(Adafruit_ILI9341* tft) {
-	tft_ = tft;
 	float sign;
 
 	switch (random(4)) {
 		case 0:
-			dx_ = SPAWN_LEFT;
-			dy_ = random(SPAWN_UP, SPAWN_DOWN+1);
+			centroid.x = SPAWN_LEFT;
+			centroid.y = random(SPAWN_UP, SPAWN_DOWN+1);
 			break;
 		case 1:
-			dx_ = SPAWN_RIGHT;
-			dy_ = random(SPAWN_UP, SPAWN_DOWN+1);
+			centroid.x = SPAWN_RIGHT;
+			centroid.y = random(SPAWN_UP, SPAWN_DOWN+1);
 			break;
 		case 2:
-			dx_ = random(SPAWN_LEFT, SPAWN_RIGHT+1);
-			dy_ = SPAWN_UP;
+			centroid.x = random(SPAWN_LEFT, SPAWN_RIGHT+1);
+			centroid.y = SPAWN_UP;
 			break;
 		case 3:
-			dx_ = random(SPAWN_LEFT, SPAWN_RIGHT+1);
-			dy_ = SPAWN_DOWN;
+			centroid.x = random(SPAWN_LEFT, SPAWN_RIGHT+1);
+			centroid.y = SPAWN_DOWN;
 			break;
 	}
 
 	sign = random(2)*2-1;
-	vx_ = random(ASTEROID_VEL_MAG_MIN*100, ASTEROID_VEL_MAG_MAX*100+1);
-	vx_ = vx_/100*sign;
+	vel.x = random(ASTEROID_VEL_MAG_MIN*100, ASTEROID_VEL_MAG_MAX*100+1);
+	vel.x = vel.x/100*sign;
 
 	sign = random(2)*2-1;
-	vy_ = random(ASTEROID_VEL_MAG_MIN*100, ASTEROID_VEL_MAG_MAX*100+1);
-	vy_ = vy_/100*sign;
-
-	ax_ = 0;
-	ay_ = 0;
-
-	point pt[] = {
-		{0, 20},
-		{20, 0},
-		{0, -20},
-		{-20, 0}
-	};
-
-	edge_[0].p1 = pt[0];
-	edge_[0].p2 = pt[1];
-
-	edge_[1].p1 = pt[1];
-	edge_[1].p2 = pt[2];
-
-	edge_[2].p1 = pt[2];
-	edge_[2].p2 = pt[3];
-
-	edge_[3].p1 = pt[0];
-	edge_[3].p2 = pt[3];
+	vel.y = random(ASTEROID_VEL_MAG_MIN*100, ASTEROID_VEL_MAG_MAX*100+1);
+	vel.y = vel.y/100*sign;
 }
 
 void Asteroid::updateAcceleration() {}
 
 void Asteroid::updateVelocity() {
-	vx_ += ax_;
-	vy_ += ay_;
+	vel.x += acc.x;
+	vel.y += acc.y;
 }
 
 void Asteroid::updateDisplacement() {
-	dx_ = constrain(dx_+vx_, LOOP_LEFT, LOOP_RIGHT);
-	dy_ = constrain(dy_+vy_, LOOP_UP, LOOP_DOWN);
+	centroid.x = constrain(centroid.x+vel.x, LOOP_LEFT, LOOP_RIGHT);
+	centroid.y = constrain(centroid.y+vel.y, LOOP_UP, LOOP_DOWN);
 
-	if (dx_ == LOOP_LEFT) {
-		dx_ = LOOP_RIGHT;
+	if (centroid.x == LOOP_LEFT) {
+		centroid.x = LOOP_RIGHT;
 	}
-	else if (dx_ == LOOP_RIGHT) {
-		dx_ = LOOP_LEFT;
+	else if (centroid.x == LOOP_RIGHT) {
+		centroid.x = LOOP_LEFT;
 	}
-	if (dy_ == LOOP_UP) {
-		dy_ = LOOP_DOWN;
+	if (centroid.y == LOOP_UP) {
+		centroid.y = LOOP_DOWN;
 	}
-	else if (dy_ == LOOP_DOWN) {
-		dy_ = LOOP_UP;
+	else if (centroid.y == LOOP_DOWN) {
+		centroid.y = LOOP_UP;
 	}
+}
+
+void Asteroid::generate_polygon(int size) {
+	// Generates a random closed polygon
+	float angular_step = 2 * PI / (float) sides;
+
+	point first_point, last_point;
+
+	for (int v = 0; v < sides; v++) {
+		float vertex_size = random(8, 25);
+		float vertex_angle = angular_step * v + angular_step / 3 * random(1);
+
+		if (v == 0) {
+			first_point = last_point = point(vertex_size * cos(vertex_angle), vertex_size * sin(vertex_angle));
+		}
+		else {
+			point next_point = point(vertex_size * cos(vertex_angle), vertex_size * sin(vertex_angle));
+			edges[v-1] = edge(last_point, next_point);
+		}
+	}
+
+	edges[sides - 1] = edge(last_point, first_point);
 }
 
 void Asteroid::update() {
@@ -124,19 +106,12 @@ void Asteroid::destroy() {
 }
 
 void Asteroid::draw(uint16_t color) {
-	for (int i = 0; i < 4; i++) {
-		tft_->drawLine(edge_[i].p1.x+dx_, edge_[i].p1.y+dy_,
-			edge_[i].p2.x+dx_, edge_[i].p2.y+dy_, color);
+	for (int i = 0; i < sides; i++) {
+		tft.drawLine(edges[i].p1.x+centroid.x, edges[i].p1.y+centroid.y,
+			edges[i].p2.x+centroid.x, edges[i].p2.y+centroid.y, color);
 	}
 }
 
 bool Asteroid::isHit(point b) {
-	polygon ast;
-
-	point center(dx_, dy_);
-	ast.centroid = center;
-	ast.edges = edge_;
-	ast.nedges = 4;
-
-	return ::is_collision(b, ast);
+	return ::is_collision(b, *this);
 }

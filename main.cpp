@@ -32,12 +32,8 @@ void setup() {
 int main() {
 	setup();
 
-	Asteroid ast;
-	ast.initRand(&tft);
+	Asteroid ast, ast2;
 	gameState.spawn(&ast);
-
-	Asteroid ast2;
-	ast2.initRand(&tft);
 	gameState.spawn(&ast2);
 
 	Spaceship ss;

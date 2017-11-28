@@ -20,29 +20,25 @@
 #define LOOP_UP (LOOP_DIST*-1)
 #define LOOP_DOWN (TFT_HEIGHT+LOOP_DIST)
 
+extern Adafruit_ILI9341 tft;
 
-class Asteroid {
+class Asteroid : public polygon {
 public:
-	int index;
-
-	void init(Adafruit_ILI9341* tft);
-	void init(Adafruit_ILI9341* tft, float dx, float dy);
-	void init(Adafruit_ILI9341* tft, float dx, float dy,
-		float vx, float vy);
-	void initRand(Adafruit_ILI9341* tft);
+	Asteroid();
+	~Asteroid();
 
 	void update();
 	void destroy();
 	bool isHit(point b);
 
+	int index;
+
 private:
-	float dx_, dy_; // displacement
-	float vx_, vy_; // velocity
-	float ax_, ay_; // acceleration
+	vector2 vel;  // velocity
+	vector2 acc;  // acceleration
 
-	edge edge_[4];
-
-	Adafruit_ILI9341* tft_;
+	void initRand();
+	void generate_polygon(int size);
 
 	void draw(uint16_t color);
 	void updateAcceleration();

@@ -70,12 +70,15 @@ void GameState::tick()
 
     for(int i = 0; i < bul_size_; i++) {
         bullets[i].update();
+    }
 
-        for(int j = 0; j < ast_size_; j++) {
-            bool hit = asteroids[j].isHit(bullets[i].getPosition());
-            if(hit) {
-                asteroids[j].destroy();
-                despawn(&asteroids[j]);
+    // Collisions
+    for(int i = 0; i < ast_size_; i++) {
+        for(int j = 0; j < bul_size_; j++) {
+            if(asteroids[i].isHit(bullets[j].getPosition())) {
+                despawn(&asteroids[i]);
+                despawn(&bullets[j]);
+                break;
             }
         }
     }
@@ -84,6 +87,7 @@ void GameState::tick()
 void GameState::despawn(Asteroid* ast)
 {
     int index = ast->index;
+    ast->destroy();
 
     if (index != bul_size_ - 1) {
         // Swap in the last element
@@ -99,6 +103,7 @@ void GameState::despawn(Asteroid* ast)
 void GameState::despawn(Bullet* bul)
 {
     int index = bul->index;
+    bul->destroy();
 
     if (index != bul_size_ - 1) {
         // Swap in the last element

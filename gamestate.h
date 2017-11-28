@@ -30,8 +30,7 @@ public:
 private:
     int ast_size_;
     int bul_size_;
-
-    Asteroid* asteroids_;
+    
 };
 
 extern GameState gameState;

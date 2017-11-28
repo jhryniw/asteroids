@@ -84,7 +84,7 @@ bool is_collision(point p, polygon poly)
 {
     int intersections = 0;
 
-	for (int i = 0; i < poly.nedges; i++) {
+	for (int i = 0; i < poly.sides; i++) {
 		if (rayTraceEdge(poly.centroid, poly.edges[i], p)) {
 			intersections++;
 		}
