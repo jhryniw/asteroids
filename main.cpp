@@ -34,23 +34,19 @@ void setup() {
 
 int main() {
 	setup();
-
-	deltaTime = (millis() - prevTime) / 100;
-	prevTime = millis() / 100;
-
 	gameState.drawScore();
 
 	while (true) {
-		unsigned long start = millis();
+		deltaTime = (millis() - prevTime) / 100;
+		prevTime = millis();
+
 		gameState.tick(deltaTime);
 
-		if(!gameState.hasMaxAsteroids() && random(1000) < (MAX_ASTEROIDS - gameState.numAsteroids())) {
-			Asteroid a;
-			spawn_asteroid(&a);
+		if(!gameState.hasMaxAsteroids() && random(1000)
+				< (MAX_ASTEROIDS - gameState.numAsteroids())) {
+					Asteroid a;
+					spawn_asteroid(&a);
 		}
-
-		unsigned long run_time = millis() - start;
-		delay(max(10 - (long)run_time, 0));
 	}
 
 	return 0;

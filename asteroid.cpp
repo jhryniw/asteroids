@@ -12,7 +12,7 @@ Asteroid::~Asteroid()
 }
 
 void Asteroid::initRand() {
-	sides = floor(random(4, 7));
+	sides = floor(random(5, 7));
 
 	edges = new edge[sides];
 	generate_polygon(1);
@@ -51,14 +51,14 @@ void Asteroid::initRand() {
 
 void Asteroid::updateAcceleration() {}
 
-void Asteroid::updateVelocity() {
-	vel.x += acc.x;
-	vel.y += acc.y;
+void Asteroid::updateVelocity(float dt) {
+	vel.x += acc.x*dt;
+	vel.y += acc.y*dt;
 }
 
-void Asteroid::updateDisplacement() {
-	centroid.x = constrain(centroid.x+vel.x, LOOP_LEFT, LOOP_RIGHT);
-	centroid.y = constrain(centroid.y+vel.y, LOOP_UP, LOOP_DOWN);
+void Asteroid::updateDisplacement(float dt) {
+	centroid.x = constrain(centroid.x+vel.x*dt, LOOP_LEFT, LOOP_RIGHT);
+	centroid.y = constrain(centroid.y+vel.y*dt, LOOP_UP, LOOP_DOWN);
 
 	if (centroid.x == LOOP_LEFT) {
 		centroid.x = LOOP_RIGHT;
@@ -81,7 +81,7 @@ void Asteroid::generate_polygon(int size) {
 	point first_point, last_point;
 
 	for (int v = 0; v < sides; v++) {
-		int rand_num = random(20, 40);
+		int rand_num = random(40, 60);
 		float vertex_size = rand_num*rand_num/100*size;
 		float vertex_angle = angular_step * v + angular_step / 3 * random(1);
 
@@ -98,11 +98,11 @@ void Asteroid::generate_polygon(int size) {
 	edges[sides - 1] = edge(last_point, first_point);
 }
 
-void Asteroid::update() {
+void Asteroid::update(float dt) {
 	draw(ILI9341_BLACK);
 	updateAcceleration();
-	updateVelocity();
-	updateDisplacement();
+	updateVelocity(dt);
+	updateDisplacement(dt);
 	draw(ASTEROID_COLOR);
 }
 

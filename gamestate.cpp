@@ -2,7 +2,7 @@
 
 void spawn_asteroid(Asteroid* asteroid) {
     gameState.spawn(asteroid);
-    Serial.println(asteroid->index);
+    //Serial.println(asteroid->index);
 }
 
 void spawn_bullet(Bullet* bullet) {
@@ -30,6 +30,7 @@ GameState::GameState(Adafruit_ILI9341* tft) :
     asteroids = (Asteroid *) malloc(sizeof(Asteroid) * MAX_ASTEROIDS);
     bullets = (Bullet *) malloc(sizeof(Bullet) * MAX_BULLETS);
     score = 0;
+    lives = 3;
 }
 
 GameState::~GameState()
@@ -41,7 +42,7 @@ GameState::~GameState()
 void GameState::spawn(Asteroid* ast)
 {
     if (ast_size_ >= MAX_ASTEROIDS) {
-        Serial.print("Cannot add another asteroid, game state is full!");
+        //Serial.print("Cannot add another asteroid, game state is full!");
         return;
     }
 
@@ -53,7 +54,7 @@ void GameState::spawn(Asteroid* ast)
 void GameState::spawn(Bullet* bul)
 {
     if (bul_size_ >= MAX_BULLETS) {
-        Serial.print("Cannot add another asteroid, game state is full!");
+        //Serial.print("Cannot add another asteroid, game state is full!");
         return;
     }
 
@@ -70,19 +71,27 @@ void GameState::drawScore() {
   tft_->print(score);
 }
 
+void GameState::gameOver() {
+  while (true) {}
+}
+
 void GameState::tick(float dt)
 {
     spaceship.update(dt);
 
     for(int i = 0; i < ast_size_; i++) {
-        asteroids[i].update();
+        asteroids[i].update(dt);
     }
 
     for(int i = 0; i < bul_size_; i++) {
-        bullets[i].update();
+        bullets[i].update(dt);
     }
 
     checkCollisions();
+
+    if (lives <= 0) {
+      gameOver();
+    }
 
     drawScore();
 }
@@ -129,7 +138,13 @@ void GameState::checkCollisions() {
               break;
           }
       }
+      for (int k = 0; k < 3; k++) {
+        if(asteroids[i].isHit(spaceship.getVertexPos(k))) {
+          lives--;
+        }
+      }
   }
+
 }
 
 bool GameState::hasMaxAsteroids()

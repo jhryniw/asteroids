@@ -29,25 +29,25 @@ point Bullet::getPosition() {
 
 void Bullet::updateAcceleration() {}
 
-void Bullet::updateVelocity(){
-	vel.x += acc.x;
-	vel.y += acc.y;
+void Bullet::updateVelocity(float dt){
+	vel.x += acc.x*dt;
+	vel.y += acc.y*dt;
 }
 
-void Bullet::updateDisplacement() {
-	pos.x += vel.x;
-	pos.y += vel.y;
+void Bullet::updateDisplacement(float dt) {
+	pos.x += vel.x*dt;
+	pos.y += vel.y*dt;
 
 	if(!::on_screen(pos.x, pos.y)) {
-		Serial.println("Despawning bullet");
+		//Serial.println("Despawning bullet");
 		despawn_bullet(this);
 	}
 }
 
-void Bullet::update() {
+void Bullet::update(float dt) {
 	draw(ILI9341_BLACK);
-	updateVelocity();
-	updateDisplacement();
+	updateVelocity(dt);
+	updateDisplacement(dt);
 	draw(BULLET_COLOR);
 }
 

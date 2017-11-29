@@ -19,6 +19,7 @@ public:
     Asteroid* asteroids;
     Bullet* bullets;
     int score;
+    int lives;
 
     void spawn(Asteroid* ast);
     void spawn(Bullet* bul);

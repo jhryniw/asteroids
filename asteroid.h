@@ -5,8 +5,8 @@
 #include "common.h"
 
 #define ASTEROID_COLOR ILI9341_WHITE
-#define ASTEROID_VEL_MAG_MIN 0.5
-#define ASTEROID_VEL_MAG_MAX 1
+#define ASTEROID_VEL_MAG_MIN 3
+#define ASTEROID_VEL_MAG_MAX 10
 
 #define SPAWN_DIST 15
 #define SPAWN_LEFT (SPAWN_DIST*-1)
@@ -27,7 +27,7 @@ public:
 	Asteroid();
 	~Asteroid();
 
-	void update();
+	void update(float dt);
 	void destroy();
 	bool isHit(point b);
 
@@ -43,8 +43,8 @@ private:
 
 	void draw(uint16_t color);
 	void updateAcceleration();
-	void updateVelocity();
-	void updateDisplacement();
+	void updateVelocity(float dt);
+	void updateDisplacement(float dt);
 };
 
 #endif

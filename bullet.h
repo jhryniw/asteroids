@@ -6,7 +6,7 @@
 #include "common.h"
 
 #define BULLET_COLOR ILI9341_YELLOW
-#define BULLET_VEL_MAX_MAG 4
+#define BULLET_VEL_MAX_MAG 50
 
 extern Adafruit_ILI9341 tft;
 
@@ -15,7 +15,7 @@ public:
 	Bullet(point start_pos, vector2d start_vel);
 	~Bullet();
 
-	void update();
+	void update(float dt);
 	void destroy();
 
 	int index;
@@ -28,8 +28,8 @@ private:
 
 	void draw(uint16_t color);
 	void updateAcceleration();
-	void updateVelocity();
-	void updateDisplacement();
+	void updateVelocity(float dt);
+	void updateDisplacement(float dt);
 };
 
 #endif
