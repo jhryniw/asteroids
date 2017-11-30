@@ -9,6 +9,7 @@
 
 #define MAX_ASTEROIDS 8
 #define MAX_BULLETS 20
+#define MAX_LIVES 3
 
 class GameState {
 public:
@@ -28,6 +29,7 @@ public:
     void despawn(Bullet* bul);
 
     void drawScore();
+    void drawLives();
 
     void tick(float dt);
 
@@ -39,6 +41,7 @@ public:
 
     void checkCollisions();
 
+    void shipHit();
     void gameOver();
 
 private:
@@ -48,5 +51,6 @@ private:
 };
 
 extern GameState gameState;
+extern float prevTime, deltaTime;
 
 #endif

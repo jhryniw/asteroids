@@ -11,9 +11,6 @@
 Adafruit_ILI9341 tft = Adafruit_ILI9341(TFT_CS, TFT_DC);
 GameState gameState(&tft);
 
-float prevTime;
-float deltaTime;
-
 void setup() {
 	init();
 
@@ -37,7 +34,7 @@ int main() {
 	gameState.drawScore();
 
 	while (true) {
-		deltaTime = (millis() - prevTime) / 100;
+		deltaTime = (millis() - prevTime) / 1000;
 		prevTime = millis();
 
 		gameState.tick(deltaTime);

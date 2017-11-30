@@ -1,8 +1,8 @@
 #include "spaceship.h"
 
-Spaceship::Spaceship()
- : pos(TFT_WIDTH/2, TFT_HEIGHT/2), u(0, 1)
-{
+Spaceship::Spaceship() {
+  reset();
+
   verticesOrig[0] = {SPACESHIP_TRIANGLE_MAX, SPACESHIP_TRIANGLE_MAX};
   verticesOrig[1] = {SPACESHIP_TRIANGLE_MAX/4, SPACESHIP_TRIANGLE_MAX/3};
   verticesOrig[2] = {SPACESHIP_TRIANGLE_MAX/4, SPACESHIP_TRIANGLE_MAX/3};
@@ -13,6 +13,12 @@ Spaceship::Spaceship()
 Spaceship::~Spaceship()
 {
 
+}
+
+void Spaceship::reset() {
+  pos = point(TFT_WIDTH/2, TFT_HEIGHT/2);
+  u = point(0,1);
+  becomeInvul(SPACESHIP_MAX_INVUL);
 }
 
 void Spaceship::updateVertices() {
@@ -73,18 +79,40 @@ void Spaceship::updateDisplacement(float dt) {
   updateVertices();
 }
 
+void Spaceship::updateInvul(float dt) {
+  if (invulTime < 0) {
+    invul = false;
+    invulTime = 0;
+    spaceship_color = ILI9341_GREEN;
+  }
+  else if (invulTime > 0) {
+    invulTime -= dt;
+  }
+}
+
+void Spaceship::becomeInvul(float time) {
+  invul = true;
+  invulTime = time;
+  spaceship_color = ILI9341_CYAN;
+}
+
+bool Spaceship::isInvul() {
+  return invul;
+}
+
 void Spaceship::update(float dt) {
 	draw(ILI9341_BLACK);
 	updateAcceleration();
 	updateVelocity(dt);
 	updateDisplacement(dt);
+  updateInvul(dt);
 	fire();
-	draw(SPACESHIP_COLOR);
+	draw(spaceship_color);
 }
 
 void Spaceship::draw(uint16_t color) {
 
-	tft.drawCircle((uint16_t) pos.x, (uint16_t) pos.y, SPACESHIP_RADIUS, color);
+	//tft.drawCircle((uint16_t) pos.x, (uint16_t) pos.y, SPACESHIP_RADIUS, color);
   /*
 	tft.drawLine((uint16_t) pos.x, (uint16_t) pos.y,
 		(uint16_t) pos.x+u.x*SPACESHIP_RADIUS,

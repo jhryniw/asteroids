@@ -6,7 +6,7 @@
 #include "common.h"
 
 #define BULLET_COLOR ILI9341_YELLOW
-#define BULLET_VEL_MAX_MAG 50
+#define BULLET_VEL_MAX_MAG 500
 
 extern Adafruit_ILI9341 tft;
 

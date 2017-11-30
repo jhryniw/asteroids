@@ -5,8 +5,8 @@
 #include "common.h"
 
 #define ASTEROID_COLOR ILI9341_WHITE
-#define ASTEROID_VEL_MAG_MIN 3
-#define ASTEROID_VEL_MAG_MAX 10
+#define ASTEROID_VEL_MAG_MIN 30
+#define ASTEROID_VEL_MAG_MAX 100
 
 #define SPAWN_DIST 15
 #define SPAWN_LEFT (SPAWN_DIST*-1)

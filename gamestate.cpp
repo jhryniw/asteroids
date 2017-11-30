@@ -1,5 +1,8 @@
 #include "gamestate.h"
 
+float prevTime;
+float deltaTime;
+
 void spawn_asteroid(Asteroid* asteroid) {
     gameState.spawn(asteroid);
     //Serial.println(asteroid->index);
@@ -30,7 +33,7 @@ GameState::GameState(Adafruit_ILI9341* tft) :
     asteroids = (Asteroid *) malloc(sizeof(Asteroid) * MAX_ASTEROIDS);
     bullets = (Bullet *) malloc(sizeof(Bullet) * MAX_BULLETS);
     score = 0;
-    lives = 3;
+    lives = MAX_LIVES;
 }
 
 GameState::~GameState()
@@ -71,8 +74,60 @@ void GameState::drawScore() {
   tft_->print(score);
 }
 
+void GameState::drawLives() {
+  for (int i = 0; i < lives; i++) {
+    tft_->setCursor(TFT_WIDTH-30-20*i, 10);
+    tft_->setTextColor(ILI9341_WHITE, ILI9341_BLACK);
+    tft_->setTextSize(3);
+
+    tft_->print((char) 3);
+  }
+}
+
+void GameState::shipHit() {
+  delay(500);
+  prevTime = millis();
+  deltaTime = (millis() - prevTime) / 1000;
+
+  lives--;
+  spaceship.reset();
+
+  tft_->setCursor(TFT_WIDTH-30-20*lives, 10);
+  tft_->setTextColor(ILI9341_BLACK);
+  tft_->setTextSize(3);
+  tft_->print((char) 3);
+
+  if (lives < 0) {
+    gameOver();
+  }
+}
+
+int getNumDigs(int num) {
+  int count = 1;
+
+  while (num /= 10) {
+    count++;
+  }
+
+  return count;
+}
+
 void GameState::gameOver() {
+  tft.fillScreen(ILI9341_BLACK);
+  tft_->setTextColor(ILI9341_WHITE);
+  tft_->setTextSize(3);
+
+  tft_->setCursor(TFT_WIDTH/2-15*12/2, TFT_HEIGHT/2-40);
+  tft_->print("Game over!");
+
+  tft_->setCursor(TFT_WIDTH/2-15*13/2, TFT_HEIGHT/2);
+  tft_->print("Your score:");
+
+  tft_->setCursor(TFT_WIDTH/2-15*(getNumDigs(score)+2)/2, TFT_HEIGHT/2+40);
+  tft_->print(score);
+
   while (true) {}
+
 }
 
 void GameState::tick(float dt)
@@ -89,11 +144,8 @@ void GameState::tick(float dt)
 
     checkCollisions();
 
-    if (lives <= 0) {
-      gameOver();
-    }
-
     drawScore();
+    drawLives();
 }
 
 void GameState::despawn(Asteroid* ast)
@@ -138,9 +190,9 @@ void GameState::checkCollisions() {
               break;
           }
       }
-      for (int k = 0; k < 3; k++) {
+      for (int k = 0; k < 3 && !spaceship.isInvul(); k++) {
         if(asteroids[i].isHit(spaceship.getVertexPos(k))) {
-          lives--;
+          shipHit();
         }
       }
   }
