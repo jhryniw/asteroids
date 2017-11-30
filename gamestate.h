@@ -8,7 +8,7 @@
 #include "bullet.h"
 
 #define MAX_ASTEROIDS 8
-#define MAX_BULLETS 20
+#define MAX_BULLETS 10
 #define MAX_LIVES 3
 
 class GameState {

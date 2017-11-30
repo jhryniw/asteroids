@@ -54,8 +54,8 @@ void Spaceship::updateAcceleration() {
 		acc.y = u.y*SPACESHIP_ACC_MAG;
 	}
 	else {
-		acc.x = sign(vel.x) * -0.01;
-		acc.y = sign(vel.y) * -0.01;
+		acc.x = sign(vel.x) * -50;
+		acc.y = sign(vel.y) * -50;
 	}
 }
 

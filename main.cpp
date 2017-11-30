@@ -26,7 +26,12 @@ void setup() {
 	pinMode(BUTTON_2,INPUT);
 	digitalWrite(BUTTON_2,HIGH);
 
-	randomSeed(analogRead(A7));
+	uint16_t seed = 0;
+	for (int i = 0; i < 16; i++) {
+		seed = (seed << 1) | analogRead(A7) & 1;
+	}
+
+	randomSeed(seed);
 }
 
 int main() {
