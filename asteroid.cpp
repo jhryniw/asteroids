@@ -1,11 +1,13 @@
 #include "asteroid.h"
 
+// Generate a random asteroid
 Asteroid::Asteroid()
 	: polygon()
 {
 	initRand();
 }
 
+// Generate an asteroid with physical parameters
 Asteroid::Asteroid(point position, vector2d velocity, vector2d acceleration, int s)
 	: polygon(), size(s)
 {
@@ -19,11 +21,13 @@ Asteroid::Asteroid(point position, vector2d velocity, vector2d acceleration, int
 	generate_polygon(size);
 }
 
+// Dtor
 Asteroid::~Asteroid()
 {
 
 }
 
+// Initialize random asteroid
 void Asteroid::initRand() {
 	size = random(1, 3);
 	sides = random(4 + size, 6 + size);
@@ -62,13 +66,16 @@ void Asteroid::initRand() {
 	vel.y = vel.y/100*sign;
 }
 
+// Tick acceleration
 void Asteroid::updateAcceleration() {}
 
+// Tick Velocity
 void Asteroid::updateVelocity(float dt) {
 	vel.x += acc.x*dt;
 	vel.y += acc.y*dt;
 }
 
+// Tick displacement
 void Asteroid::updateDisplacement(float dt) {
 	centroid.x = constrain(centroid.x+vel.x*dt, LOOP_LEFT, LOOP_RIGHT);
 	centroid.y = constrain(centroid.y+vel.y*dt, LOOP_UP, LOOP_DOWN);
@@ -87,6 +94,7 @@ void Asteroid::updateDisplacement(float dt) {
 	}
 }
 
+// Randomly generate the asteroid shape (a closed polygon)
 void Asteroid::generate_polygon(int size) {
 	// Generates a random closed polygon
 	float angular_step = 2 * PI / (float) sides;
@@ -111,6 +119,8 @@ void Asteroid::generate_polygon(int size) {
 	edges[sides - 1] = edge(last_point, first_point);
 }
 
+// The main update function
+// Called every game tick
 void Asteroid::update(float dt) {
 	draw(ILI9341_BLACK);
 	updateAcceleration();
@@ -119,10 +129,12 @@ void Asteroid::update(float dt) {
 	draw(ASTEROID_COLOR);
 }
 
+// Undraw the asteroid
 void Asteroid::destroy() {
 	draw(ILI9341_BLACK);
 }
 
+// Rotation helper function
 void rotate(vector2d& v, float theta) {
 	float rMatrix[4];
 	rMatrix[0] = rMatrix[3] = cos(theta);
@@ -133,6 +145,7 @@ void rotate(vector2d& v, float theta) {
 	v.y = rMatrix[2] * v.x + rMatrix[3] * v.y;
 }
 
+// Split an asteroid into two
 Asteroid Asteroid::split() {
 	int new_size = size > 1 ? size - 1 : 1;
 
@@ -152,6 +165,7 @@ Asteroid Asteroid::split() {
 	return Asteroid(p2, v2, a2, new_size);
 }
 
+// Draw the asteroid
 void Asteroid::draw(uint16_t color) {
 	for (int i = 0; i < sides; i++) {
 		tft.drawLine(edges[i].p1.x+centroid.x, edges[i].p1.y+centroid.y,
@@ -159,6 +173,7 @@ void Asteroid::draw(uint16_t color) {
 	}
 }
 
+// Returns if a point is inside the asteroid
 bool Asteroid::isHit(point b) {
 	return ::is_collision(b, *this);
 }
