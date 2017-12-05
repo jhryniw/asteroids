@@ -2,6 +2,7 @@
 
 #define IN_RANGE(X, A, B) (X >= A && X <= B)
 
+// Check if a point is on the screen
 bool on_screen(int x, int y)
 {
     return IN_RANGE(x, 0, TFT_WIDTH) && IN_RANGE(y, 0, TFT_HEIGHT);
@@ -9,7 +10,7 @@ bool on_screen(int x, int y)
 
 #undef IN_RANGE
 
-//
+// Does the raytracing calculation
 bool rayTraceEdge(point centroid, edge e, point p) {
     /*
 		Ray casting based on
@@ -44,38 +45,6 @@ bool rayTraceEdge(point centroid, edge e, point p) {
 	// since parallel lines return false, det != 0
 	float x_min = (b2 * c1 - b1 * c2) / det;
 
-	/*
-	Serial.println("-");
-	Serial.print("x1: ");
-	Serial.print(e.p1.x);
-	Serial.print(" y1: ");
-	Serial.print(e.p1.y);
-	Serial.print(" x2: ");
-	Serial.print(e.p2.x);
-	Serial.print(" y2: ");
-	Serial.println(e.p2.y);
-	Serial.print("a1: ");
-	Serial.print(a1);
-	Serial.print(" b1: ");
-	Serial.print(b1);
-	Serial.print(" c1: ");
-	Serial.print(c1);
-	Serial.print(" a2: ");
-	Serial.print(a2);
-	Serial.print(" b2: ");
-	Serial.print(b2);
-	Serial.print(" c2: ");
-	Serial.print(c2);
-	Serial.print(" det: ");
-	Serial.println(det);
-	Serial.print("tx: ");
-	Serial.print(tx);
-	Serial.print(" ty: ");
-	Serial.print(ty);
-	Serial.print(" max x: ");
-	Serial.println(x_threshold);
-	Serial.println("-");
-	*/
     return tx >= x_min;
 }
 

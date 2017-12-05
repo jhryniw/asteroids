@@ -48,7 +48,7 @@ int main() {
 
 		// Spawning scales up with less asteroids on screen
 		if(!gameState.hasMaxAsteroids() && random(1000)
-				< (MAX_ASTEROIDS - gameState.numAsteroids())) {
+				< (MAX_ASTEROIDS - gameState.numAsteroids()) * 1.25) {
 					Asteroid a;
 					spawn_asteroid(&a);
 		}
