@@ -6,16 +6,31 @@ Asteroid::Asteroid()
 	initRand();
 }
 
+Asteroid::Asteroid(point position, vector2d velocity, vector2d acceleration, int s)
+	: polygon(), size(s)
+{
+	centroid = position;
+	vel = velocity;
+	acc = acceleration;
+
+	sides = floor(random(4 + size, 6 + size));
+
+	edges = new edge[sides];
+	generate_polygon(size);
+}
+
 Asteroid::~Asteroid()
 {
 
 }
 
 void Asteroid::initRand() {
-	sides = floor(random(5, 7));
+	size = random(1, 3);
+	sides = random(4 + size, 6 + size);
 
 	edges = new edge[sides];
-	generate_polygon(1);
+
+	generate_polygon(size);
 
 	float sign;
 
@@ -45,8 +60,6 @@ void Asteroid::initRand() {
 	sign = random(2)*2-1;
 	vel.y = random(ASTEROID_VEL_MAG_MIN*100, ASTEROID_VEL_MAG_MAX*100+1);
 	vel.y = vel.y/100*sign;
-
-	size = 3;
 }
 
 void Asteroid::updateAcceleration() {}
@@ -81,7 +94,7 @@ void Asteroid::generate_polygon(int size) {
 	point first_point, last_point;
 
 	for (int v = 0; v < sides; v++) {
-		int rand_num = random(40, 60);
+		int rand_num = random(30, 50);
 		float vertex_size = rand_num*rand_num/100*size;
 		float vertex_angle = angular_step * v + angular_step / 3 * random(1);
 
@@ -108,6 +121,44 @@ void Asteroid::update(float dt) {
 
 void Asteroid::destroy() {
 	draw(ILI9341_BLACK);
+}
+
+void rotate(vector2d& v, float theta) {
+	float rMatrix[4];
+	Serial.println(theta);
+	rMatrix[0] = rMatrix[3] = cos(theta);
+	rMatrix[1] = -sin(theta);
+	rMatrix[2] = sin(theta);
+
+	Serial.print(v.x);
+	Serial.print(" ");
+	Serial.println(v.y);
+
+	v.x = rMatrix[0] * v.x + rMatrix[1] * v.y;
+	v.y = rMatrix[2] * v.x + rMatrix[3] * v.y;
+
+	Serial.print(v.x);
+	Serial.print(" ");
+	Serial.println(v.y);
+}
+
+Asteroid Asteroid::split() {
+	int new_size = size > 1 ? size - 1 : 1;
+
+	size = new_size;
+
+	// New Asteroid
+	point p2 = centroid;
+	vector2d v2(vel.x, vel.y);
+	vector2d a2;
+	rotate(v2, -1 * random(10, 40) * PI / 180.0);
+
+	// Modify asteroid
+	destroy();
+	generate_polygon(new_size);
+	rotate(vel, random(10, 40) * PI / 180.0);
+
+	return Asteroid(p2, v2, a2, new_size);
 }
 
 void Asteroid::draw(uint16_t color) {

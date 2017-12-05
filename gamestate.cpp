@@ -5,7 +5,6 @@ float deltaTime;
 
 void spawn_asteroid(Asteroid* asteroid) {
     gameState.spawn(asteroid);
-    //Serial.println(asteroid->index);
 }
 
 void spawn_bullet(Bullet* bullet) {
@@ -20,12 +19,15 @@ void despawn_bullet(Bullet* bullet) {
     gameState.despawn(bullet);
 }
 
-/*template<class T>
-void swap(T* a, T* b) {
-    T temp = *a;
-    *a = *b;
-    *b = temp;
-}*/
+void split_asteroid(Asteroid* asteroid) {
+    if (asteroid->size <= 1) {
+        despawn_asteroid(asteroid);
+        return;
+    }
+
+    Asteroid new_ast = asteroid->split();
+    spawn_asteroid(&new_ast);
+}
 
 GameState::GameState(Adafruit_ILI9341* tft) :
     ast_size_(0), bul_size_(0), tft_(tft)
@@ -97,7 +99,7 @@ void GameState::shipHit() {
   tft_->setTextSize(3);
   tft_->print((char) 3);
 
-  if (lives < 0) {
+  if (lives <= 0) {
     gameOver();
   }
 }
@@ -153,6 +155,10 @@ void GameState::despawn(Asteroid* ast)
     int index = ast->index;
     ast->destroy();
 
+    // We can ONLY delete the edges here (on despawn)
+    // Because then it isn't deleted on copy
+    delete[] ast->edges;
+
     if (index != ast_size_ - 1) {
         // Swap in the last element
         asteroids[index] = asteroids[ast_size_ - 1];
@@ -185,7 +191,7 @@ void GameState::checkCollisions() {
       for(int j = 0; j < bul_size_; j++) {
           if(asteroids[i].isHit(bullets[j].getPosition())) {
               score += asteroids[i].size*100/3;
-              despawn(&asteroids[i]);
+              split_asteroid(&asteroids[i]);
               despawn(&bullets[j]);
               break;
           }

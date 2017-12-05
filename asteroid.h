@@ -25,11 +25,15 @@ extern Adafruit_ILI9341 tft;
 class Asteroid : public polygon {
 public:
 	Asteroid();
+	Asteroid(point pos, vector2d vel, vector2d acc, int size);
+
 	~Asteroid();
 
 	void update(float dt);
 	void destroy();
+
 	bool isHit(point b);
+	Asteroid split();
 
 	int size;
 	int index;
