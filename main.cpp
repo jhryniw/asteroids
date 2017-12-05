@@ -26,6 +26,7 @@ void setup() {
 	pinMode(BUTTON_2,INPUT);
 	digitalWrite(BUTTON_2,HIGH);
 
+	// Sets random number generator
 	uint16_t seed = 0;
 	for (int i = 0; i < 16; i++) {
 		seed = (seed << 1) | analogRead(A7) & 1;
@@ -39,11 +40,13 @@ int main() {
 	gameState.drawScore();
 
 	while (true) {
+		// Updates delta time since last frame
 		deltaTime = (millis() - prevTime) / 1000;
 		prevTime = millis();
 
 		gameState.tick(deltaTime);
 
+		// Spawning scales up with less asteroids on screen
 		if(!gameState.hasMaxAsteroids() && random(1000)
 				< (MAX_ASTEROIDS - gameState.numAsteroids())) {
 					Asteroid a;
