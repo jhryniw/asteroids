@@ -19,21 +19,27 @@ Bullet::~Bullet() {
 	destroy();
 }
 
+// Colors pixel black
 void Bullet::destroy() {
 	draw(ILI9341_BLACK);
 }
 
+// Returns position of bullet
 point Bullet::getPosition() {
 	return pos;
 }
 
+// Updates acceleration - not used
 void Bullet::updateAcceleration() {}
 
+// Adds acceleration to velocity
 void Bullet::updateVelocity(float dt){
 	vel.x += acc.x*dt;
 	vel.y += acc.y*dt;
 }
 
+// Adds velocity to displacement
+// Despawns bullet if it goes out of screen
 void Bullet::updateDisplacement(float dt) {
 	pos.x += vel.x*dt;
 	pos.y += vel.y*dt;
@@ -44,6 +50,7 @@ void Bullet::updateDisplacement(float dt) {
 	}
 }
 
+// Update values of bullet every frame
 void Bullet::update(float dt) {
 	draw(ILI9341_BLACK);
 	updateVelocity(dt);
@@ -51,6 +58,7 @@ void Bullet::update(float dt) {
 	draw(BULLET_COLOR);
 }
 
+// Draws bullet
 void Bullet::draw(uint16_t color) {
 	tft.drawPixel((uint16_t) pos.x, (uint16_t) pos.y, color);
 }

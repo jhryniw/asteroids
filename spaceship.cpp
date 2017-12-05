@@ -10,17 +10,17 @@ Spaceship::Spaceship() {
   updateVertices();
 }
 
-Spaceship::~Spaceship()
-{
-
+Spaceship::~Spaceship() {
 }
 
+// State of ship at respawn
 void Spaceship::reset() {
   pos = point(TFT_WIDTH/2, TFT_HEIGHT/2);
   u = point(0,1);
   becomeInvul(SPACESHIP_MAX_INVUL);
 }
 
+// Updates positions of ship triangle vertices
 void Spaceship::updateVertices() {
   float nx = u.y;
   float ny = -u.x;
@@ -37,6 +37,9 @@ void Spaceship::updateVertices() {
     pos.y-u.y*SPACESHIP_TRIANGLE_OFFSET+verticesOrig[2].y*-ny};
 }
 
+// Changes ship direction when joystick is moved
+// Accelerates if button 1 is pressed
+// Otherwise ship uses drag
 void Spaceship::updateAcceleration() {
 	float ux = getJoystickHoriz();
 	float uy = getJoystickVert();
@@ -59,11 +62,15 @@ void Spaceship::updateAcceleration() {
 	}
 }
 
+// Adds acceleration to velocity
+// Magnitude is constrained
 void Spaceship::updateVelocity(float dt) {
 	vel.x = constrain(vel.x+acc.x*dt, -SPACESHIP_VEL_MAG_MAX, SPACESHIP_VEL_MAG_MAX);
 	vel.y = constrain(vel.y+acc.y*dt, -SPACESHIP_VEL_MAG_MAX, SPACESHIP_VEL_MAG_MAX);
 }
 
+// Adds velocity to displacement
+// Constrained within screen
 void Spaceship::updateDisplacement(float dt) {
 	pos.x = constrain(pos.x+vel.x*dt, 0, TFT_WIDTH);
 	pos.y = constrain(pos.y+vel.y*dt, 0, TFT_HEIGHT);
@@ -79,6 +86,7 @@ void Spaceship::updateDisplacement(float dt) {
   updateVertices();
 }
 
+// Counts down invincibility timer
 void Spaceship::updateInvul(float dt) {
   if (invulTime < 0) {
     invul = false;
@@ -90,16 +98,19 @@ void Spaceship::updateInvul(float dt) {
   }
 }
 
+// Sets invincibility timer
 void Spaceship::becomeInvul(float time) {
   invul = true;
   invulTime = time;
   spaceship_color = ILI9341_CYAN;
 }
 
+// Returns if ship is invulnerable
 bool Spaceship::isInvul() {
   return invul;
 }
 
+// Updates values and states of ship every frame
 void Spaceship::update(float dt) {
 	draw(ILI9341_BLACK);
 	updateAcceleration();
@@ -110,20 +121,15 @@ void Spaceship::update(float dt) {
 	draw(spaceship_color);
 }
 
+// Draws triangle using ship vertices
 void Spaceship::draw(uint16_t color) {
-
-	//tft.drawCircle((uint16_t) pos.x, (uint16_t) pos.y, SPACESHIP_RADIUS, color);
-  /*
-	tft.drawLine((uint16_t) pos.x, (uint16_t) pos.y,
-		(uint16_t) pos.x+u.x*SPACESHIP_RADIUS,
-			(uint16_t) pos.y+u.y*SPACESHIP_RADIUS, color);
-  */
   tft.drawTriangle((uint16_t) getVertexPos(0).x, (uint16_t) getVertexPos(0).y,
     (uint16_t) getVertexPos(1).x, (uint16_t) getVertexPos(1).y,
     (uint16_t) getVertexPos(2).x, (uint16_t) getVertexPos(2).y,
     color);
 }
 
+// Shoots bullet in direction of ship when button 2 is pressed
 void Spaceship::fire() {
 	if (getButtonPress(BUTTON_2, true)) {
 		Bullet new_bullet(pos, u);
@@ -131,8 +137,7 @@ void Spaceship::fire() {
 	}
 }
 
+// Returns coordinates of ship vertex at index
 point Spaceship::getVertexPos(int index) {
   return vertices[index];
-  // point p (vertices[index].x+pos.x, vertices[index].y+pos.y);
-  // return p;
 }

@@ -19,12 +19,31 @@ extern Adafruit_ILI9341 tft;
 
 class Spaceship {
 public:
-	Spaceship();
-	~Spaceship();
+	Spaceship(); // Ctor
+	~Spaceship(); // Dtor
 
+	/*
+		Sets values to values at respawn
+	*/
 	void reset();
+
+	/*
+		Updates values and states of ship every frame
+		@param dt delta time since last frame (seconds)
+	*/
 	void update(float dt);
+
+	/*
+		Returns coordinates of a ship vertex at index
+		@param index index value of vertices[]
+		@return coordinates of point
+	*/
 	point getVertexPos(int index);
+
+	/*
+		Returns if ship is invulnerable
+		@return invulnerability flag
+	*/
 	bool isInvul();
 
 private:
@@ -36,19 +55,54 @@ private:
 	float invulTime;
 	uint16_t spaceship_color;
 
-	point vertices[3];
-	point verticesOrig[3];
+	point vertices[3];	// Vertices offset at ship pos
+	point verticesOrig[3]; // Vertices offset at (0,0)
 
 	Adafruit_ILI9341* tft_;
 
+	/*
+		Draws triangle using ship vertices
+		@param color color of ship
+	*/
 	void draw(uint16_t color);
+
+	/*
+		Updates direction and acceleration of ship
+	*/
 	void updateAcceleration();
+
+	/*
+		Updates velocity of ship
+		@param dt delta time since last frame (seconds)
+	*/
 	void updateVelocity(float dt);
+
+	/*
+		Updates displacement of ship
+		@param dt delta time since last frame (seconds)
+	*/
 	void updateDisplacement(float dt);
+
+	/*
+		Counts down invulnerability timer
+		@param dt delta time since last frame (seconds)
+	*/
 	void updateInvul(float dt);
+
+	/*
+		Sets ship as invincible
+		@param time length of invulnerability
+	*/
 	void becomeInvul(float time);
+
+	/*
+		Shoots bullet if button 1 is pressed
+	*/
 	void fire();
 
+	/*
+		Updates positions of ship vertices
+	*/
 	void updateVertices();
 };
 
