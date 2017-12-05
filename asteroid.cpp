@@ -125,21 +125,12 @@ void Asteroid::destroy() {
 
 void rotate(vector2d& v, float theta) {
 	float rMatrix[4];
-	Serial.println(theta);
 	rMatrix[0] = rMatrix[3] = cos(theta);
 	rMatrix[1] = -sin(theta);
 	rMatrix[2] = sin(theta);
 
-	Serial.print(v.x);
-	Serial.print(" ");
-	Serial.println(v.y);
-
 	v.x = rMatrix[0] * v.x + rMatrix[1] * v.y;
 	v.y = rMatrix[2] * v.x + rMatrix[3] * v.y;
-
-	Serial.print(v.x);
-	Serial.print(" ");
-	Serial.println(v.y);
 }
 
 Asteroid Asteroid::split() {
