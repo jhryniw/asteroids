@@ -22,17 +22,46 @@
 
 extern Adafruit_ILI9341 tft;
 
+/**
+ * Represents an asteroid in the game
+ */
 class Asteroid : public polygon {
 public:
+	/**
+	 * Construct a random asteroid
+	 */
 	Asteroid();
+
+	/**
+	 * Construct an asteroid with starting physical parameters
+	 */
 	Asteroid(point pos, vector2d vel, vector2d acc, int size);
 
+	// Dtor
 	~Asteroid();
 
+	/**
+	 * The main tick function, updates physical parameters
+	 * and redraws the asteroid
+	 */
 	void update(float dt);
+
+	/**
+	 * Undraw the asteroid
+	 */
 	void destroy();
 
+	/**
+	 * Check if the asteroid is hit
+	 * @return true if b is inside the asteroid
+	 */
 	bool isHit(point b);
+
+	/**
+	 * Split the asteroid into two asteroids
+	 * Modifies this instance and returns a new one
+	 * @return a new split asteroid
+	 */
 	Asteroid split();
 
 	int size;
@@ -42,9 +71,12 @@ private:
 	vector2d vel;  // velocity
 	vector2d acc;  // acceleration
 
+	/** Initialize asteroid with random parameters */
 	void initRand();
+	/** Generate the random polygon representing the asteroid */
 	void generate_polygon(int size);
 
+	/** Physical parameter updates and drawing */
 	void draw(uint16_t color);
 	void updateAcceleration();
 	void updateVelocity(float dt);
